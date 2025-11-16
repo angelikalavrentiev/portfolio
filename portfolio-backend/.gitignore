@@ -1,0 +1,16 @@
+/vendor/
+/assets/
+/composer.lock
+
+/.env
+/var/
+/public/bundles/
+/var/cache/
+/var/log/
+/var/sessions/
+/var/test/
+/var/bootstrap.php.cache
+/.env.local
+/.env.test.local
+/.env.prod.local
+/.env.*.local.php
