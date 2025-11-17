@@ -8,6 +8,15 @@
 /public/bundles/
 /var/
 /vendor/
+/assets/
+/bin/
+/.editorconfig
+/.env.dev
+/.env.test
+/compose.override.yaml
+/compose.yaml
+/importmap.php
+/phpunit.dist.xml
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
