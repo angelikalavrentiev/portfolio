@@ -27,7 +27,7 @@ class Messages
     private ?\DateTime $date = null;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Admin $admin = null;
 
     public function getId(): ?int

@@ -3,3 +3,9 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+messages:
+    path: /messages
+    controller: App\Controller\MessageController::newMessage
+    methods: [POST]
+

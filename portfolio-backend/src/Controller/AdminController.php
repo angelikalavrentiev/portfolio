@@ -25,14 +25,19 @@ public function downloadCV(AdminRepository $adminRepository): Response
 
     $cv = $admin->getCv();
 
-    $data = is_resource($cv) ? stream_get_contents($cv) : $cv;
+    if (is_resource($cv)) {
+        rewind($cv); 
+        $data = stream_get_contents($cv);
+    } else {
+        $data = $cv;
+    }
 
     return new Response(
         $data,
         200,
         [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="angelika_lavrentiev.pdf"'
+            'Content-Disposition' => 'attachement; filename="angelika_lavrentiev.pdf"'
         ]
     );
 }
@@ -50,7 +55,12 @@ public function viewCV(AdminRepository $adminRepository): Response
 
     $cv = $admin->getCv();
 
-    $data = is_resource($cv) ? stream_get_contents($cv) : $cv;
+    if (is_resource($cv)) {
+        rewind($cv); 
+        $data = stream_get_contents($cv);
+    } else {
+        $data = $cv;
+    }
 
     return new Response(
         $data,

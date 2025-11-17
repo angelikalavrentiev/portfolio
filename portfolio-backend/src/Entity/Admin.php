@@ -43,8 +43,8 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $cv = null;
+    #[ORM\Column(type: 'blob', length: 16777215, nullable: true)]
+    private $cv = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
@@ -186,17 +186,21 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setDescription(string $description): static
     {
-        $this->description = $description;
+        $this->description = $description; 
 
         return $this;
     }
 
     public function getCv(): ?string
-    {
-        return $this->cv;
+{
+    if (is_resource($this->cv)) {
+        rewind($this->cv);
+        return stream_get_contents($this->cv);
+    }
+    return $this->cv;
     }
 
-    public function setCv(string $cv): static
+    public function setCv(?string $cv): static
     {
         $this->cv = $cv;
 
