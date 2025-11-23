@@ -26,7 +26,7 @@ const Contact = () => {
             if (!res.ok) {
                 try {
                 const errorData = JSON.parse(text);
-                throw new Error(errorData.error || 'Erreur lors de lenvoi');
+                throw new Error(errorData.error || 'Erreur lors de l\'envoi');
             } catch {
                 throw new Error('Erreur serveur : ' + text.substring(0, 200));
             }

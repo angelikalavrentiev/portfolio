@@ -1,11 +1,9 @@
 import { useParams } from 'react-router-dom';
 import useFetch from './useFetch';
-import { useNavigate } from 'react-router-dom';
 
 const ProjectDetail = () => {
     const { id } = useParams();
     const { data: project, isPending, error } = useFetch('http://localhost:8000/api/projects/' + id);   
-    const navigate = useNavigate();
     return ( 
         <div className="project-details">
             <h2>Project Detail Page</h2>

@@ -8,7 +8,7 @@ const useFetch = (url) => {
             fetch(url)
                 .then(res => {
                     if(!res.ok){
-                        throw Error(`Impossible de récupérer les données. Statut: ${res.status}`);
+                        throw Error('Cette ressource est introuvable');
                     }
                     return res.json()
                 })

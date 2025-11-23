@@ -9,3 +9,8 @@ messages:
     controller: App\Controller\MessageController::newMessage
     methods: [POST]
 
+api_login_check:
+    path: /api/login_check
+    methods: POST
+
+
