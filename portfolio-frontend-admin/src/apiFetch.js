@@ -18,8 +18,6 @@ export const apiFetch = async (endpoint, options = {}) => {
   if (!res.ok) throw new Error(await res.text());
 
   const text = await res.text();
-   console.log('Response status:', res.status);
-  console.log('Response text:', text);
   return text ? JSON.parse(text) : null;
 };
 

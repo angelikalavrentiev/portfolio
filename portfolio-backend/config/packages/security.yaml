@@ -40,6 +40,7 @@ security:
         - { path: ^/api/competences, roles: PUBLIC_ACCESS }
         - { path: ^/api/messages, roles: PUBLIC_ACCESS, methods: [POST] }
         - { path: ^/api/admin/view-cv, roles: PUBLIC_ACCESS }
+        - { path: ^/api/admin/download-cv, roles: PUBLIC_ACCESS } 
         - { path: ^/api/auth/me, roles: ROLE_ADMIN }
         - { path: ^/api/, roles: ROLE_ADMIN }
 

@@ -14,8 +14,7 @@ class ProjectsController extends AbstractController
 
     #[Route('/api/projects', name: 'projects_api_projects', methods: ['GET'])]
 public function projects(
-    ProjectsRepository $projectsRepository,
-    EntityManagerInterface $entityManager
+    ProjectsRepository $projectsRepository
     ): JsonResponse
 {
     $projects = $projectsRepository->findAll();
@@ -53,7 +52,7 @@ public function projects(
         ];
     }
 
-    return $this->json($data, 200);
+    return $this->json($projects, 200, [], ['groups' => 'project:read']);
 }
 
  #[Route('/api/projects/{id}', name: 'projects_api_project', methods: ['GET'])]
@@ -97,7 +96,7 @@ public function projects(
                 'images' => $images,
             ];
 
-        return $this->json($data, 200);
+        return $this->json($project, 200, [], ['groups' => 'project:read']);
     }
 
 }
