@@ -11,12 +11,15 @@ class Images
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['image:read', 'project:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['image:read', 'project:read'])]
     private ?string $src = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['image:read', 'project:read'])]
     private ?string $alt = null;
 
     #[ORM\ManyToOne(inversedBy: 'images')]

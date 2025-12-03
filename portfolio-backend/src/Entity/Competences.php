@@ -25,8 +25,8 @@ class Competences
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $category = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $level = null;
+    #[ORM\Column(length: 255)]
+    private ?string $image = null;
 
     #[ORM\ManyToOne(inversedBy: 'competences')]
     #[ORM\JoinColumn(nullable: false)]
@@ -72,14 +72,14 @@ class Competences
         return $this;
     }
 
-    public function getLevel(): ?string
+    public function getImage(): ?string
     {
-        return $this->level;
+        return $this->image;
     }
 
-    public function setLevel(?string $level): static
+    public function setImage(?string $image): static
     {
-        $this->level = $level;
+        $this->image = $image;
 
         return $this;
     }

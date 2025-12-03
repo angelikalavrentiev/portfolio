@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\ProjectsRepository;
+use App\Entity\Projects;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,7 +53,7 @@ public function projects(
         ];
     }
 
-    return $this->json($projects, 200, [], ['groups' => 'project:read']);
+    return $this->json($data);
 }
 
  #[Route('/api/projects/{id}', name: 'projects_api_project', methods: ['GET'])]
@@ -96,7 +97,32 @@ public function projects(
                 'images' => $images,
             ];
 
-        return $this->json($project, 200, [], ['groups' => 'project:read']);
+        return $this->json($data);
     }
+
+#[Route('/api/projects', methods: ['POST'])]
+public function createProject(Request $request, EntityManagerInterface $em): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
+
+    $project = new Projects();
+    $project->setTitle($data['title']);
+    $project->setDescription($data['description']);
+    $project->setDates($data['dates'] ?? null);
+    $project->setLienGit($data['lienGit'] ?? null);
+    $project->setAuthor($this->getUser());
+
+    $em->persist($project);
+    $em->flush();
+
+    return $this->json([
+            'id' => $project->getId(),
+            'title' => $project->getTitle(),
+            'description' => $project->getDescription(),
+            'dates' => $project->getDates(),
+            'lienGit' => $project->getLienGit(),
+        ], 201);
+}
+
 
 }

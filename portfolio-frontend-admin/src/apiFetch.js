@@ -37,4 +37,5 @@ export const getMe = () => apiFetch('/api/auth/me');
 export const logout = () => apiFetch('/api/auth/logout', { method: 'POST' });
 export const getProjects = () => apiFetch('/api/projects');
 export const getCompetences = () => apiFetch('/api/competences');
+export const getImages = () => apiFetch('/api/images')
 export const getMessages = () => apiFetch('/api/messages');

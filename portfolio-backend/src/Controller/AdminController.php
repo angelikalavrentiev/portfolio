@@ -72,5 +72,22 @@ public function viewCV(AdminRepository $adminRepository): Response
     );
 }
 
+#[Route('/api/profil', name: 'admin_api_profil', methods: ['GET'])]
+public function getProfil(AdminRepository $adminRepository): JsonResponse
+{
+    $admin = $adminRepository->find(2);
+
+    if (!$admin) {
+        return $this->json(['error' => 'Admin introuvable'], 404);
+    }
+
+    return $this->json([
+        'username' => $admin->getUsername(),
+        'email' => $admin->getEmail(),
+        'title' => $admin->getTitle(),
+        'description' => $admin->getDescription(),
+        'photo' => $admin->getPhoto(),
+    ]);
+}
 
 }

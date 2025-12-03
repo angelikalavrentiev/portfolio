@@ -23,6 +23,9 @@ security:
                 check_path: /api/login_check
                 username_path: email
                 password_path: password
+            logout:
+                path: /api/auth/logout
+                target: /api/auth/check
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -41,6 +44,7 @@ security:
         - { path: ^/api/messages, roles: PUBLIC_ACCESS, methods: [POST] }
         - { path: ^/api/admin/view-cv, roles: PUBLIC_ACCESS }
         - { path: ^/api/admin/download-cv, roles: PUBLIC_ACCESS } 
+        - { path: ^/api/profil, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/me, roles: ROLE_ADMIN }
         - { path: ^/api/, roles: ROLE_ADMIN }
 

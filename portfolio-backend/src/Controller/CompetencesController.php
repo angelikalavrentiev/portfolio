@@ -23,7 +23,7 @@ public function competences(CompetencesRepository $competencesRepository): JsonR
             'id' => $competence->getId(),
             'name' => $competence->getName(),
             'category' => $competence->getCategory(),
-            'level' => $competence->getLevel()
+            'image' => $competence->getImage()
         ];
     }
 

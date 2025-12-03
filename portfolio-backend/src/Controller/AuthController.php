@@ -31,14 +31,6 @@ class AuthController extends AbstractController
         ]);
     }
 
-    #[Route('/api/auth/logout', name: 'auth_api_logout', methods: ['POST'])]
-    public function logout(Request $request): JsonResponse
-    {
-        $this->container->get('security.token_storage')->setToken(null);
-        $request->getSession()->invalidate();
-        return $this->json(['message' => 'Déconnecté']);
-    }
-
     #[Route('/api/auth/check', name: 'auth_api_check', methods: ['GET'])]
     public function checkAuth(): JsonResponse
     {
