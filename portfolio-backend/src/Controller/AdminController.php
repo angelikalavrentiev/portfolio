@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Doctrine\ORM\EntityManagerInterface;
 
 class AdminController extends AbstractController
 {
@@ -75,10 +76,16 @@ public function viewCV(AdminRepository $adminRepository): Response
 #[Route('/api/profil', name: 'admin_api_profil', methods: ['GET'])]
 public function getProfil(AdminRepository $adminRepository): JsonResponse
 {
-    $admin = $adminRepository->find(2);
+    $admin = $adminRepository->find(1);
 
     if (!$admin) {
         return $this->json(['error' => 'Admin introuvable'], 404);
+    }
+
+    $cvFilename = null;
+    $cv = $admin->getCV();
+    if (is_string($cv)) {
+        $cvFilename = $cv;
     }
 
     return $this->json([
@@ -86,8 +93,38 @@ public function getProfil(AdminRepository $adminRepository): JsonResponse
         'email' => $admin->getEmail(),
         'title' => $admin->getTitle(),
         'description' => $admin->getDescription(),
+        'cv' => $cvFilename,
         'photo' => $admin->getPhoto(),
     ]);
 }
+
+#[Route('/api/profil', name: 'admin_api_profil_update', methods: ['POST'])]
+public function updateProfil(Request $request, EntityManagerInterface $em): JsonResponse
+{
+  
+    $admin = $this->getUser();
+    if (!$admin) {
+        return $this->json(['error' => 'Admin non connecté'], 403);
+    }
+
+    $title = $request->request->get('title');
+    $description = $request->request->get('description');
+    $CV = $request->files->get('cv');
+    $photo = $request->request->get('photo');
+
+    if ($title) $admin->setTitle($title);
+    if ($description) $admin->setDescription($description);
+    if ($CV) {
+        $filename = uniqid() . '_' . $CV->getClientOriginalName();
+        $CV->move($this->getParameter('cv_directory'), $filename);
+        $admin->setCv($filename);
+    }
+    if ($photo) $admin->setPhoto($photo);
+
+    $em->flush();
+
+    return $this->json(['message' => 'Profil mis à jour'], 200);
+}
+
 
 }

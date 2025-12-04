@@ -6,6 +6,12 @@ function ProjectsPanel({ projects, onUpdate }) {
   const [dates, setDates] = useState('');
   const [lienGit, setLienGit] = useState('');
 
+  const [editingId, setEditingId] = useState(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [editDates, setEditDates] = useState('');
+  const [editLienGit, setEditLienGit] = useState('');
+
   const handleAdd = async (e) => {
     e.preventDefault();
 
@@ -19,13 +25,55 @@ function ProjectsPanel({ projects, onUpdate }) {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description, dates, lienGit })
+        body: JSON.stringify({ title, description, dates, lien_git: lienGit })
       });
 
       setTitle('');
       setDescription('');
       setDates('');
       setLienGit('')
+      onUpdate();
+    } catch (error) {
+      alert('Erreur: ' + error.message);
+    }
+  };
+
+  const startEdit = (proj) => {
+    setEditingId(proj.id);
+    setEditTitle(proj.title);
+    setEditDescription(proj.description);
+    setEditDates(proj.dates);
+    setEditLienGit(proj.liengit || '');
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditTitle('');
+    setEditDescription('');
+    setEditDates('');
+    setEditLienGit('');
+  };
+
+  const handleUpdate = async (id) => {
+    if (!editTitle || !editDescription) {
+      alert('Remplissez tous les champs');
+      return;
+    }
+
+    try {
+      await fetch(`http://localhost:8000/api/projects/${id}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          title: editTitle, 
+          description: editDescription, 
+          dates: editDates,
+          lien_git: editLienGit
+        })
+      });
+      
+      cancelEdit();
       onUpdate();
     } catch (error) {
       alert('Erreur: ' + error.message);
@@ -94,17 +142,82 @@ function ProjectsPanel({ projects, onUpdate }) {
         ) : (
           projects.map((proj) => (
             <div key={proj.id} className="item">
-              <div>
-                <strong>{proj.title}</strong>
-                <p className="description">{proj.description}</p>
-                <span className="badge">{proj.dates}</span>
-              </div>
-              <button 
-                onClick={() => handleDelete(proj.id)}
-                className="btn btn-red btn-small"
-              >
-                    Supprimer
-              </button>
+              {editingId === proj.id ? (
+              <div style={{ flex: 1 }}>
+                <input
+                    type="text"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    className="input"
+                    style={{ marginBottom: '8px' }}
+                  />
+                  <input
+                    type="text"
+                    value={editDescription} 
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    className="input"
+                    style={{ marginBottom: '8px' }}
+                  />
+                  <input
+                    type="text"
+                    value={editDates}
+                    onChange={(e) => setEditDates(e.target.value)}
+                    placeholder="dates"
+                    className="input"
+                  />
+                  <input
+                    type="text"
+                    value={editLienGit}
+                    onChange={(e) => setEditLienGit(e.target.value)}
+                    placeholder="liengit"
+                    className="input"
+                  />
+                  <div className="button-group" style={{ marginTop: '8px' }}>
+                    <button 
+                      onClick={() => handleUpdate(proj.id)}
+                      className="btn btn-green btn-small"
+                    >
+                      Sauvegarder
+                    </button>
+                    <button 
+                      onClick={cancelEdit}
+                      className="btn btn-gray btn-small"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div>
+                    <strong>{proj.title}</strong>
+                    <span> - {proj.description}</span>
+                    {proj.dates && <p><em>Dates: {proj.dates}</em></p>}
+                    {proj.lien_git && ( 
+                      <p>
+                        <a href={proj.lien_git} target="_blank" rel="noopener noreferrer">
+                          Voir sur GitHub : {proj.lien_git}
+                        </a>
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <button 
+                      onClick={() => startEdit(proj)}
+                      className="btn btn-blue btn-small"
+                      style={{ marginRight: '8px' }}
+                    >
+                      Modifier
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(proj.id)}
+                      className="btn btn-red btn-small"
+                    >
+                      Supprimer
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           ))
         )}

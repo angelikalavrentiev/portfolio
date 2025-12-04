@@ -41,7 +41,7 @@ class Projects
     /**
      * @var Collection<int, Images>
      */
-    #[ORM\OneToMany(targetEntity: Images::class, mappedBy: 'project')]
+    #[ORM\OneToMany(targetEntity: Images::class, mappedBy: 'project', cascade: ['remove'])]
     #[Groups(["project:read"])]
     private Collection $images;
 

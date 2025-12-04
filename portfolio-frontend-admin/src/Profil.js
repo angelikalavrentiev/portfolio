@@ -1,30 +1,67 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function ProfilPanel({ user, onUpdate }) {
     const [editing, setEditing] = useState(false);
     const [title, setTitle] = useState(user?.title || '');
     const [description, setDescription] = useState(user?.description || '');
     const [CV, setCV] = useState(user?.CV || '');
+    const [cvName, setCvName] = useState("");
     const [photo, setPhoto] = useState(user?.photo || '');
+
+    useEffect(() => {
+    const fetchProfil = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/profil', {
+          method: 'GET',
+          credentials: 'include'
+        });
+        const data = await response.json();
+        
+        setTitle(data.title || '');
+        setDescription(data.description || '');
+        setCvName(data.cv || '');
+        setPhoto(data.photo || '');
+      } catch (error) {
+        console.error('Erreur lors du chargement du profil:', error);
+      }
+    };
+
+    fetchProfil();
+  }, []);
+
   const handleSave = async () => {
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
 
     if (CV) formData.append("cv", CV);      
     if (photo) formData.append("photo", photo);
+
     try {
-      await fetch(`http://localhost:8000/api/profil/${user.id}`, {
+      await fetch(`http://localhost:8000/api/profil`, {
         method: 'POST',
         body: formData,
         credentials: 'include'
       });
       setEditing(false);
-      onUpdate();
-    } catch (error) {
+      const response = await fetch('http://localhost:8000/api/profil', {
+        method: 'GET',
+        credentials: 'include'
+    }); 
+    const data = await response.json();
+      
+      setTitle(data.title || '');
+      setDescription(data.description || '');
+      setCvName(data.cv || '');
+      setPhoto(data.photo || '');
+      
+      if (onUpdate) onUpdate();
+      }catch (error) {
       alert('Erreur: ' + error.message);
     }
   };
+
 
   return (
     <div className="card">
@@ -34,8 +71,18 @@ function ProfilPanel({ user, onUpdate }) {
         <div>
           <p><strong>Titre:</strong> {user?.title}</p>
           <p><strong>Description:</strong> {user?.description}</p>
-            <p><strong>CV:</strong> {user?.CV}</p>  
-            <p><strong>Photo:</strong> {user?.photo}</p>
+            <p><strong>CV:</strong> {cvName ? (
+            <a 
+              href={`http://localhost:8000/api/admin/view-cv`} 
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
+              Voir le CV ({cvName})
+            </a>
+          ) : 'Aucun CV'}</p>  
+            <p><strong>Photo:</strong></p>
+            {photo && <img src={`http://localhost:8000/uploads/photos/${photo}`} alt="photo" />}
+
           <button 
             onClick={() => setEditing(true)} 
             className="btn btn-blue"

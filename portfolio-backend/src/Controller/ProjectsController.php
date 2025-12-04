@@ -124,5 +124,55 @@ public function createProject(Request $request, EntityManagerInterface $em): Jso
         ], 201);
 }
 
+#[Route('/api/projects/{id}', name: 'projects_api_projects_update', methods: ['PUT'])]
+public function updateProject(int $id, Request $request, ProjectsRepository $projectsRepository, EntityManagerInterface $em): JsonResponse
+{
+  
+    $admin = $this->getUser();
+    if (!$admin) {
+        return $this->json(['error' => 'Admin non connecté'], 403);
+    }
+
+    $project = $projectsRepository->find($id);
+    
+    if (!$project) {
+        return $this->json(['error' => 'Compétence introuvable'], 404);
+    }
+
+    $data = json_decode($request->getContent(), true);
+
+    if (isset($data['title'])) $project->setTitle($data['title']);
+    if (isset($data['description'])) $project->setDescription($data['description']);
+    if (isset($data['dates'])) $project->setDates($data['dates']);
+    if (isset($data['liengit'])) $project->setLienGit($data['liengit']);
+
+    $em->flush();
+
+    return $this->json(['message' => 'project mis à jour'], 200);
+}
+
+#[Route('/api/projects/{id}', name: 'projects_api_project_delete', methods: ['DELETE'])]
+    public function deleteProject(int $id, ProjectsRepository $projectsRepository, EntityManagerInterface $em): JsonResponse
+    {
+        $admin = $this->getUser();
+        if (!$admin) {
+            return $this->json(['error' => 'Admin non connecté'], 403);
+        }
+
+        $project = $projectsRepository->find($id);
+        
+        if (!$project) {
+            return $this->json(['error' => 'Compétence introuvable'], 404);
+        }
+
+        if ($project->getAuthor() !== $admin) {
+            return $this->json(['error' => 'Non autorisé'], 403);
+        }
+
+        $em->remove($project);
+        $em->flush();
+
+        return $this->json(['message' => 'Compétence supprimée'], 200);
+    }
 
 }

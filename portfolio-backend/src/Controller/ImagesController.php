@@ -77,5 +77,51 @@ public function createImage(Request $request, EntityManagerInterface $em, Projec
         ], 201, [], ['groups' => 'image:read']);
 }
 
+#[Route('/api/images/{id}', name: 'images_api_images_update', methods: ['PUT'])]
+public function updateImage(int $id, Request $request, ImagesRepository $imagesRepository, EntityManagerInterface $em): JsonResponse
+{
+  
+    $admin = $this->getUser();
+    if (!$admin) {
+        return $this->json(['error' => 'Admin non connecté'], 403);
+    }
+
+    $image = $imagesRepository->find($id);
+    
+    if (!$image) {
+        return $this->json(['error' => 'Image introuvable'], 404);
+    }
+
+    $data = json_decode($request->getContent(), true);
+
+    if (isset($data['src'])) $image->setSrc($data['src']);
+    if (isset($data['alt'])) $image->setAlt($data['alt']);
+    if (isset($data['projectId'])) $image->setProjectId($data['projectId']);
+
+    $em->flush();
+
+    return $this->json(['message' => 'image mis à jour'], 200);
+}
+
+#[Route('/api/images/{id}', name: 'images_api_image_delete', methods: ['DELETE'])]
+    public function deleteImage(int $id, ImagesRepository $imagesRepository, EntityManagerInterface $em): JsonResponse
+    {
+        $admin = $this->getUser();
+        if (!$admin) {
+            return $this->json(['error' => 'Admin non connecté'], 403);
+        }
+
+        $image = $imagesRepository->find($id);
+        
+        if (!$image) {
+            return $this->json(['error' => 'Image introuvable'], 404);
+        }
+
+        $em->remove($image);
+        $em->flush();
+
+        return $this->json(['message' => 'Image supprimée'], 200);
+    }
+
 
 }

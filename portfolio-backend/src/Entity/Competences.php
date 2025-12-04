@@ -25,7 +25,7 @@ class Competences
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $category = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
     #[ORM\ManyToOne(inversedBy: 'competences')]
