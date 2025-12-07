@@ -71,8 +71,8 @@ const Contact = () => {
                 </textarea>
                 
 
-                { !isPending && <button>Send message</button>}
-                { isPending && <button disabled>Sending message</button>}
+                { !isPending && <button className='btn'>Send message</button>}
+                { isPending && <button className='btn'disabled>Sending message</button>}
             </form>
         </div>
      );

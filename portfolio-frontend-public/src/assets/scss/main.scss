@@ -1,0 +1,85 @@
+@import './variables.scss';
+@import './menuburger.scss';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
+    h1{
+        @apply font-bold;
+    }
+
+    body {
+        font-family: #{$font-primary};
+
+        background-color: #{$light};
+        color: #{$text-light}; 
+
+        .dark & {
+            background-color: #{$dark};
+            color: #{$text-dark};
+        }
+    }
+}
+
+@layer components {
+
+    .btn {
+        @apply px-3 py-1 rounded font-bold m-2;
+
+        background-color: #{$primary-light};
+    }
+
+    .dark .btn {
+        background-color: #{$primary-dark};
+    }
+
+    .card {
+        @apply rounded-lg shadow-md p-4 m-4;
+        background-color: #{$primary-light};
+        .dark & {
+            background-color: #{$primary-dark};
+        }
+    }
+
+    .header-container {
+        .burger-toggle {
+            @apply fixed top-4 right-4 z-50; 
+        }
+        display: flex;
+        justify-content: right;
+            .navbar {
+            @apply fixed top-0 left-0 w-full h-full;
+            background-color: #{$light}; 
+            display: flex;
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease-in-out;
+                .menu-options {
+                    @apply mt-8; 
+                }
+                .links {
+                    @apply flex flex-col items-center gap-4 text-3xl;
+                }
+                .dark & {
+                background-color: #{$dark};
+            }
+
+            }
+    }
+}
+
+html.burger .navbar {
+    opacity: 1;
+    pointer-events: auto;
+
+    .dark & {
+        background-color: #{$dark};
+    }
+}

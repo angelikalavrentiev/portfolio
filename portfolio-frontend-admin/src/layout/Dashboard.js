@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { getMe, getProjects, getCompetences, getImages } from './apiFetch.js';
-import ProfilPanel from './Profil.js';
-import ProjectsPanel from './Projects.js';
-import CompetencesPanel from './Competences.js';
-import ImagesPanel from './Images.js';
+import { getMe, getProjects, getCompetences, getImages } from '../components/apiFetch.js';
+import ProfilPanel from '../components/Profil.js';
+import ProjectsPanel from '../components/Projects.js';
+import CompetencesPanel from '../components/Competences.js';
+import ImagesPanel from '../components/Images.js';
 
 function Dashboard() {
     const [user, setUser] = useState(null);

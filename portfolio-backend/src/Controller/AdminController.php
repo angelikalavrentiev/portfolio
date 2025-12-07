@@ -18,19 +18,19 @@ public function downloadCV(AdminRepository $adminRepository): Response
 {
     $admin = $adminRepository->find(1);
 
-    if (!$admin || !$admin->getCv()) {
+    if (!$admin || !$admin->getCV()) {
         return $this->json([
             'error' => 'CV introuvable'
         ], 404);
     }
 
-    $cv = $admin->getCv();
+    $CV = $admin->getCV();
 
-    if (is_resource($cv)) {
-        rewind($cv); 
-        $data = stream_get_contents($cv);
+    if (is_resource($CV)) {
+        rewind($CV); 
+        $data = stream_get_contents($CV);
     } else {
-        $data = $cv;
+        $data = $CV;
     }
 
     return new Response(
@@ -48,19 +48,19 @@ public function viewCV(AdminRepository $adminRepository): Response
 {
     $admin = $adminRepository->find(1);
 
-    if (!$admin || !$admin->getCv()) {
+    if (!$admin || !$admin->getCV()) {
         return $this->json([
             'error' => 'CV introuvable'
         ], 404);
     }
 
-    $cv = $admin->getCv();
+    $CV = $admin->getCV();
 
-    if (is_resource($cv)) {
-        rewind($cv); 
-        $data = stream_get_contents($cv);
+    if (is_resource($CV)) {
+        rewind($CV); 
+        $data = stream_get_contents($CV);
     } else {
-        $data = $cv;
+        $data = $CV;
     }
 
     return new Response(
@@ -76,24 +76,20 @@ public function viewCV(AdminRepository $adminRepository): Response
 #[Route('/api/profil', name: 'admin_api_profil', methods: ['GET'])]
 public function getProfil(AdminRepository $adminRepository): JsonResponse
 {
-    $admin = $adminRepository->find(1);
+    $admin = $adminRepository->find(2);
 
     if (!$admin) {
         return $this->json(['error' => 'Admin introuvable'], 404);
     }
 
-    $cvFilename = null;
-    $cv = $admin->getCV();
-    if (is_string($cv)) {
-        $cvFilename = $cv;
-    }
+    $CV = $admin->getCV();
 
     return $this->json([
         'username' => $admin->getUsername(),
         'email' => $admin->getEmail(),
         'title' => $admin->getTitle(),
         'description' => $admin->getDescription(),
-        'cv' => $cvFilename,
+        'CV' => $CV ? '/uploads/cv/' . $CV : null,
         'photo' => $admin->getPhoto(),
     ]);
 }
@@ -109,7 +105,7 @@ public function updateProfil(Request $request, EntityManagerInterface $em): Json
 
     $title = $request->request->get('title');
     $description = $request->request->get('description');
-    $CV = $request->files->get('cv');
+    $CV = $request->files->get('CV');
     $photo = $request->request->get('photo');
 
     if ($title) $admin->setTitle($title);
@@ -117,7 +113,7 @@ public function updateProfil(Request $request, EntityManagerInterface $em): Json
     if ($CV) {
         $filename = uniqid() . '_' . $CV->getClientOriginalName();
         $CV->move($this->getParameter('cv_directory'), $filename);
-        $admin->setCv($filename);
+        $admin->setCV($filename);
     }
     if ($photo) $admin->setPhoto($photo);
 

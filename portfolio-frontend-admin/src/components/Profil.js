@@ -4,8 +4,8 @@ function ProfilPanel({ user, onUpdate }) {
     const [editing, setEditing] = useState(false);
     const [title, setTitle] = useState(user?.title || '');
     const [description, setDescription] = useState(user?.description || '');
-    const [CV, setCV] = useState(user?.CV || '');
-    const [cvName, setCvName] = useState("");
+    const [CVFile, setCVFile] = useState(null);
+    const [CVName, setCVName] = useState("");
     const [photo, setPhoto] = useState(user?.photo || '');
 
     useEffect(() => {
@@ -19,7 +19,8 @@ function ProfilPanel({ user, onUpdate }) {
         
         setTitle(data.title || '');
         setDescription(data.description || '');
-        setCvName(data.cv || '');
+        setCVName(data.CV || '');
+        setCVFile(null);
         setPhoto(data.photo || '');
       } catch (error) {
         console.error('Erreur lors du chargement du profil:', error);
@@ -35,7 +36,7 @@ function ProfilPanel({ user, onUpdate }) {
     formData.append("title", title);
     formData.append("description", description);
 
-    if (CV) formData.append("cv", CV);      
+    if (CVFile) formData.append("CV", CVFile);      
     if (photo) formData.append("photo", photo);
 
     try {
@@ -53,7 +54,7 @@ function ProfilPanel({ user, onUpdate }) {
       
       setTitle(data.title || '');
       setDescription(data.description || '');
-      setCvName(data.cv || '');
+      setCVName(data.cv || '');
       setPhoto(data.photo || '');
       
       if (onUpdate) onUpdate();
@@ -71,13 +72,13 @@ function ProfilPanel({ user, onUpdate }) {
         <div>
           <p><strong>Titre:</strong> {user?.title}</p>
           <p><strong>Description:</strong> {user?.description}</p>
-            <p><strong>CV:</strong> {cvName ? (
+            <p><strong>CV:</strong> {CVName ? (
             <a 
               href={`http://localhost:8000/api/admin/view-cv`} 
               target="_blank" 
               rel="noopener noreferrer"
             >
-              Voir le CV ({cvName})
+              Voir le CV ({CVName})
             </a>
           ) : 'Aucun CV'}</p>  
             <p><strong>Photo:</strong></p>
@@ -107,7 +108,7 @@ function ProfilPanel({ user, onUpdate }) {
             <input
             type="file"
             accept="application/pdf"
-            onChange={(e) => setCV(e.target.files[0])}
+            onChange={(e) => setCVFile(e.target.files[0])}
             className="input"
             />
             <input

@@ -1,7 +1,7 @@
-import Projects from './Projects';
-import Competences from './Competences';
-import Profil from './Profil';
-import useFetch from './useFetch';
+import Projects from '../pages/Projects';
+import Competences from '../components/Competences';
+import Profil from '../components/Profil';
+import useFetch from '../components/useFetch';
 
 const Home = () => {
     const { data: projects} = useFetch('http://localhost:8000/api/projects');

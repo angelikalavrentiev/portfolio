@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Momo+Signature&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+$font-primary: "Inconsolata", monospace;
+
+//light
+$light: #bbc5cf;
+$text-light: black;
+$primary-light: #aba9bc;
+
+//dark
+$dark: #10183f;
+$text-dark: white;
+$primary-dark: #777586;
+
+// responsive
+$mobile: 640px;   // sm
+$tablet: 768px;   // md
+$laptop: 1024px;  // lg
+$desktop: 1280px; //xl

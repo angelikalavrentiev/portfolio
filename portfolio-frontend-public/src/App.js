@@ -1,16 +1,18 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import Home from './Home';
-import About from './About';
-import Projects from './Projects';
-import ProjectDetail from './ProjectDetail';
-import Contact from './Contact';
-import NotFound from './404';
-import useFetch from './useFetch';
+import './assets/scss/main.scss';
+import Navbar from './layout/Navbar';
+import Footer from './layout/Footer';
+import Home from './layout/Home';
+import About from './pages/About';
+import Projects from './pages/Projects';
+import ProjectDetail from './pages/ProjectDetail';
+import Contact from './pages/Contact';
+import NotFound from './pages/404';
+import useFetch from './components/useFetch';
 
 function App() {
   const { data: projects } = useFetch('http://localhost:8000/api/projects');
+
   return (
       <Router>
         <div className="App">

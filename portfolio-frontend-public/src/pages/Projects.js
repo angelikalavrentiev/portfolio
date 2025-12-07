@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 const Projects = ({projects}) => {
     
     return ( 
-        <div className="projects">
+        <div className="projects card">
             {projects && (
              projects.map((project) => (
                 <div className="project-preview" key={project.id}>

@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import useFetch from './useFetch';
+import useFetch from '../components/useFetch';
 
 const ProjectDetail = () => {
     const { id } = useParams();

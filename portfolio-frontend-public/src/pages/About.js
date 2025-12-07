@@ -1,4 +1,4 @@
-import CVButton from './CV';
+import CVButton from '../components/CV';
 
 const About = () => {
     return ( 

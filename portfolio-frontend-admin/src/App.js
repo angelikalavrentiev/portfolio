@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import NotFound from './404';
-import Dashboard from './Dashboard';
-import Login from './Login';
-import Logout from './Logout';
+import NotFound from './pages/404';
+import Dashboard from './layout/Dashboard';
+import Login from './pages/Login';
+import Logout from './components/Logout';
 // import Mail from './Mail';
-import Navbar from './Navbar';
-import ProtectedRoute from './ProtectedRoute';
+import Navbar from './layout/Navbar';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
