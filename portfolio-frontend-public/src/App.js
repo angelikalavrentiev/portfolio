@@ -4,7 +4,7 @@ import Navbar from './layout/Navbar';
 import Footer from './layout/Footer';
 import Home from './layout/Home';
 import About from './pages/About';
-import Projects from './pages/Projects';
+import Projects from './pages/Galaxy';
 import ProjectDetail from './pages/ProjectDetail';
 import Contact from './pages/Contact';
 import NotFound from './pages/404';

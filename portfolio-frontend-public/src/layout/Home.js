@@ -1,6 +1,6 @@
-import Projects from '../pages/Projects';
+import Galaxy from '../pages/Galaxy';
 import Competences from '../components/Competences';
-import Profil from '../components/Profil';
+import Profil from '../components/Profil'; 
 import useFetch from '../components/useFetch';
 
 const Home = () => {
@@ -13,7 +13,7 @@ const Home = () => {
             <h2>Hi</h2>
             {profil && <Profil profil={profil} />}
             {competences && <Competences competences={competences} />}
-            {projects && <Projects projects={projects} />}
+            {projects && <Galaxy projects={projects} />}
         </div>
     );
 }
