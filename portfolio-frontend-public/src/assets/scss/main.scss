@@ -1,5 +1,6 @@
 @import './variables.scss';
 @import './menuburger.scss';
+@import './contact.scss';
 
 @tailwind base;
 @tailwind components;
@@ -27,13 +28,21 @@
 @layer components {
 
     .btn {
-        @apply px-3 py-1 rounded font-bold m-2;
+        @apply px-3 py-1 rounded font-medium m-3 mt-8;
 
         background-color: #{$primary-light};
+        border: 1px solid rgb(255, 255, 255);
+        box-shadow: inset 0 0 15px #{$dark};
+        border-radius: 8px;
+        color: #ffffff;
     }
 
     .dark .btn {
         background-color: #{$primary-dark};
+        border: 1px solid rgb(255, 255, 255);
+        box-shadow: inset 0 0 15px #{$light};
+        border-radius: 8px;
+        color: #fff;
     }
 
     .card {
@@ -50,6 +59,8 @@
         }
         display: flex;
         justify-content: right;
+        position: relative;
+        z-index: 9999;
             .navbar {
             @apply fixed top-0 left-0 w-full h-full;
             background-color: #{$light}; 

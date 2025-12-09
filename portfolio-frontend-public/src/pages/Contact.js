@@ -46,13 +46,13 @@ const Contact = () => {
     }
  
     return ( 
-        <div>
-            <h2>Page Contact</h2>
+        <div className='contact'>
+            <h1>Contactez-moi</h1>
             {successMsg && <div style={{ color: 'green', marginBottom: '1em' }}>{successMsg}</div>}
             {errorMsg && <div style={{ color: 'red', marginBottom: '1em' }}>{errorMsg}</div>}
             
-            <form onSubmit={handleSubmit}>
-                <label>Title:</label>
+            <form onSubmit={handleSubmit} className='form-contact'>
+                <label>Sujet:</label>
                 <input type="text" required 
                 value={title} 
                 onChange={(e) => setTitle(e.target.value)}
@@ -64,7 +64,7 @@ const Contact = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 /> 
 
-                <label>Content:</label>
+                <label>Message:</label>
                 <textarea required 
                 value={content} 
                 onChange={(e) => setContent(e.target.value)}>

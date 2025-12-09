@@ -1,185 +1,230 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
+ 
 const GalaxyCanvas = ({ projects }) => {
     const mountRef = useRef(null);
     const [traveling, setTraveling] = useState(false);
-    const travelingRef = useRef(false);
-
-    useEffect(() => {
-        travelingRef.current = traveling;
-    }, [traveling]);
-
+ 
+    const cameraRef = useRef(null);
+    const controlsRef = useRef(null);
+    const travelProgress = useRef(0);
+    const starSpeedRef = useRef(0.3);
+    const travelComplete = useRef(false); 
+ 
     useEffect(() => {
         if (!projects || projects.length === 0 || !mountRef.current) return;
-
-        let scene, camera, renderer, starGeo, stars;
+ 
+        let scene, renderer, starGeo, stars;
         let animationId;
         const planets = [];
-        const state = { cameraStopped: false }; 
-
+ 
         function init() {
             scene = new THREE.Scene();
-
-            camera = new THREE.PerspectiveCamera(
-                60, 
-                mountRef.current.clientWidth / mountRef.current.clientHeight, 
-                1, 
-                1000
+ 
+            const camera = new THREE.PerspectiveCamera(
+                60,
+                mountRef.current.clientWidth / mountRef.current.clientHeight,
+                1,
+                2000
             );
-            camera.position.z = 1;
-            camera.rotation.x = Math.PI / 2;
-
+            camera.position.set(0, 0, 1500);
+            cameraRef.current = camera;
+ 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
-
+ 
             if (mountRef.current.children.length === 0) {
                 mountRef.current.appendChild(renderer.domElement);
             }
-
-            const starCount = 6000;
+ 
+            const starCount = 10000;
             const positions = new Float32Array(starCount * 3);
-            const velocities = new Float32Array(starCount);
-            const accelerations = new Float32Array(starCount); 
-
+ 
             for (let i = 0; i < starCount; i++) {
-                positions[i * 3] = Math.random() * 2000 - 1000; // x
-                positions[i * 3 + 1] = Math.random() * 2000 - 1000; // y
-                positions[i * 3 + 2] = Math.random() * 2000 - 1000; // z
-                velocities[i] = 0;
-                accelerations[i] = 0.3; 
+                positions[i * 3] = Math.random() * 2000 - 1000;
+                positions[i * 3 + 1] = Math.random() * 2000 - 1000;
+                positions[i * 3 + 2] = Math.random() * 2000 - 1000;
             }
-
+ 
             starGeo = new THREE.BufferGeometry();
             starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-           
-            const sprite = new THREE.TextureLoader().load('/star.png'); 
+ 
+            const sprite = new THREE.TextureLoader().load('/star.png');
             const starMaterial = new THREE.PointsMaterial({
-                color: 0xaaaaaa,
-                size: 0.7,
+                color: 0xffffff,
+                size: 1,
                 map: sprite,
-                transparent: true,
-                alphaTest: 0.5 
+                alphaTest: 0.5,
+                transparent: true
             });
-
+ 
             stars = new THREE.Points(starGeo, starMaterial);
             scene.add(stars);
-
+ 
             createPlanets();
-            animate(velocities, accelerations);
-
+            animate();
+ 
             window.addEventListener("resize", onWindowResize);
         }
-
+ 
         function createPlanets() {
-            
             projects.forEach((project, idx) => {
-                const geometry = new THREE.SphereGeometry(15, 32, 32); 
-                const material = new THREE.MeshStandardMaterial({ 
-                    color: idx === 0 ? 0xff0000 : 0x00ff00, 
-                    emissive: idx === 0 ? 0xff0000 : 0x00ff00,
+                const geometry = new THREE.SphereGeometry(15, 26, 26);
+                const color = new THREE.Color();
+                color.setHSL(Math.random(), 1, 0.5);
+ 
+                const material = new THREE.MeshStandardMaterial({
+                    color: color,
+                    emissive: color,
                     emissiveIntensity: 0.5,
                     metalness: 0.3,
                     roughness: 0.4
                 });
+ 
                 const mesh = new THREE.Mesh(geometry, material);
-
-                const x = idx % 2 === 0 ? -50 : 50;
+                const x = idx % 2 === 0 ? -80 : 80;
                 const y = 0;
-                const z = -400 - idx * 80; 
+                const z = -200 - idx * 150;
                 mesh.position.set(x, y, z);
                 mesh.userData = { project };
-                
-                console.log(`  Planet ${idx}: "${project.title}" at (${x}, ${y}, ${z})`);
-                
+ 
+                console.log(`Planet ${idx}: "${project.title}" at (${x}, ${y}, ${z})`);
                 scene.add(mesh);
                 planets.push(mesh);
             });
-
-          
-            const light = new THREE.PointLight(0xffffff, 3, 1000); 
-            light.position.set(0, 0, 0); 
+ 
+            const light = new THREE.PointLight(0xffffff, 3, 1500);
+            light.position.set(0, 0, 0);
             scene.add(light);
-
-            const ambientLight = new THREE.AmbientLight(0xffffff, 1.5); 
+ 
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
             scene.add(ambientLight);
-
+ 
             const dirLight = new THREE.DirectionalLight(0xffffff, 1);
             dirLight.position.set(0, 100, 100);
             scene.add(dirLight);
-
+ 
             const raycaster = new THREE.Raycaster();
             const mouse = new THREE.Vector2();
-            
-            const onClick = (event) => {
+ 
+            renderer.domElement.addEventListener("click", (event) => {
+                if (!travelComplete.current) return;
+ 
                 const rect = renderer.domElement.getBoundingClientRect();
                 mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
                 mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-                raycaster.setFromCamera(mouse, camera);
+ 
+                raycaster.setFromCamera(mouse, cameraRef.current);
                 const intersects = raycaster.intersectObjects(planets);
-                
                 if (intersects.length > 0) {
                     const planet = intersects[0].object;
                     alert(`Projet: ${planet.userData.project.title}\n${planet.userData.project.description}`);
                 }
-            };
-            
-            renderer.domElement.addEventListener("click", onClick);
+            });
         }
-
-        function animate(velocities, accelerations) {
-            const positions = starGeo.attributes.position.array;
-            const starCount = velocities.length;
-
-         
-            if (travelingRef.current && !state.cameraStopped) {
-                for (let i = 0; i < starCount; i++) {
-                    velocities[i] += accelerations[i];
-                    positions[i * 3 + 1] -= velocities[i];
-
-                    if (positions[i * 3 + 1] < -1000) {
-                        positions[i * 3 + 1] = 1000;
-                        velocities[i] = 0;
+ 
+        const travelDuration = 6000;
+        let travelStartTime = null;
+ 
+        function animate() {
+            if (!cameraRef.current) return;
+ 
+            if (traveling && !travelComplete.current) {
+                if (!travelStartTime) {
+                    travelStartTime = Date.now();
+                }
+ 
+                const elapsed = Date.now() - travelStartTime;
+                const t = Math.min(elapsed / travelDuration, 1);
+                travelProgress.current = t;
+ 
+                if (t < 0.8) {
+                    starSpeedRef.current = 0.3 + (t * 20);
+                } else {
+                    starSpeedRef.current = 20 * (1 - t) * 5;
+                }
+ 
+                const startZ = 2100;
+                const endZ = 30;
+                const easedT = easeInOutCubic(t);
+                cameraRef.current.position.z = startZ + (endZ - startZ) * easedT;
+ 
+           
+                const center = new THREE.Vector3();
+                planets.forEach(p => center.add(p.position));
+                center.divideScalar(planets.length);
+                cameraRef.current.lookAt(center);
+ 
+                console.log(`Travel: ${(t * 100).toFixed(1)}%`);
+ 
+                if (t >= 1) {
+                    travelComplete.current = true;
+                    travelStartTime = null;
+                    starSpeedRef.current = 0.3;
+                   
+                    const center = new THREE.Vector3();
+                    planets.forEach(p => center.add(p.position));
+                    center.divideScalar(planets.length);
+                   
+                    if (!controlsRef.current) {
+                        const controls = new OrbitControls(cameraRef.current, renderer.domElement);
+                        controls.enableDamping = true;
+                        controls.dampingFactor = 0.05;
+                        controls.target.copy(center);
+                        controls.minDistance = 5;
+                        controls.maxDistance = 500;
+                        controls.enablePan = true;
+                        controlsRef.current = controls;
                     }
                 }
-
-                starGeo.attributes.position.needsUpdate = true;
-
-                const speed = camera.position.z > -60 ? 3 : 1;
-                camera.position.z -= speed;
-              
-                if (camera.position.z <= -380) {
-                    camera.position.z = -380;
-                    state.cameraStopped = true;
-                    new OrbitControls(camera, renderer.domElement);
+            }
+ 
+            const positions = starGeo.attributes.position.array;
+            for (let i = 0; i < positions.length / 3; i++) {
+                positions[i * 3 + 2] += starSpeedRef.current;
+               
+                if (positions[i * 3 + 2] > 1000) {
+                    positions[i * 3 + 2] = -1000;
+                    positions[i * 3] = Math.random() * 2000 - 1000;
+                    positions[i * 3 + 1] = Math.random() * 2000 - 1000;
                 }
             }
-
-            stars.rotation.y += 0.002;
-
-            planets.forEach((planet) => {
-                planet.rotation.y += 0.01;
-            });
-
-            renderer.render(scene, camera);
-            animationId = requestAnimationFrame(() => animate(velocities, accelerations));
+            starGeo.attributes.position.needsUpdate = true;
+   
+            if (!travelComplete.current) {
+                stars.rotation.z += 0.0005;
+            }
+ 
+            planets.forEach(p => p.rotation.y += 0.01);
+ 
+            if (travelComplete.current && controlsRef.current) {
+                controlsRef.current.update();
+            }
+ 
+            renderer.render(scene, cameraRef.current);
+            animationId = requestAnimationFrame(animate);
         }
-
+ 
+        function easeInOutCubic(t) {
+            return t < 0.5
+                ? 4 * t * t * t
+                : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+ 
         function onWindowResize() {
-            if (!mountRef.current) return;
-            camera.aspect = mountRef.current.clientWidth / mountRef.current.clientHeight;
-            camera.updateProjectionMatrix();
+            if (!mountRef.current || !cameraRef.current || !renderer) return;
+            cameraRef.current.aspect = mountRef.current.clientWidth / mountRef.current.clientHeight;
+            cameraRef.current.updateProjectionMatrix();
             renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
         }
-
+ 
         init();
-
+ 
         return () => {
             cancelAnimationFrame(animationId);
             window.removeEventListener("resize", onWindowResize);
+            if (controlsRef.current) controlsRef.current.dispose();
             if (renderer) renderer.dispose();
             if (starGeo) starGeo.dispose();
             planets.forEach(p => {
@@ -188,61 +233,68 @@ const GalaxyCanvas = ({ projects }) => {
             });
             if (mountRef.current) mountRef.current.innerHTML = '';
         };
-    }, [projects]);
-
+    }, [projects, traveling]);
+ 
+    const handleTravelClick = () => {
+        setTraveling(true);
+        travelProgress.current = 0;
+        travelComplete.current = false; 
+    };
+ 
     return (
-        <div style={{ 
-            position: "relative", 
-            width: "100%", 
-            height: "80vh", 
+        <div style={{
+            position: "relative",
+            width: "100%",
+            height: "80vh",
             overflow: "hidden",
             backgroundColor: "#000"
         }}>
-            <div
-                ref={mountRef}
-                style={{ width: "100%", height: "100%" }}
-            />
-
-            {!traveling && (
-                <div
+            <div ref={mountRef} style={{ width: "100%", height: "100%" }} />
+ 
+            {!traveling && !travelComplete.current && (
+                <button
                     style={{
                         position: "absolute",
                         top: "50%",
                         left: "50%",
                         transform: "translate(-50%, -50%)",
-                        zIndex: 1,
+                        zIndex: 10,
                         cursor: "pointer",
                         padding: "10px 20px",
-                        backgroundColor: "#000000ff",
+                        backgroundColor: "rgba(0, 0, 0, 1)",
                         color: "#fff",
                         border: "2px solid #fff",
-                        borderRadius: "8px"
+                        borderRadius: "12px",
+                        fontSize: "20px",
+                        fontWeight: "bold",
+                        transition: "all 0.3s",
+                        textShadow: "0 0 10px rgba(255,255,255,0.5)",
+                        borderShadow: "0 0 10px rgba(255,255,255,0.5)",
                     }}
-                    onClick={() => setTraveling(true)}
+                    onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = "#fff";
+                        e.target.style.color = "#000000ff";
+                        e.target.style.transform = "translate(-50%, -50%) scale(1.01)";
+                    }}
+                    onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = "rgba(0, 0, 0, 1)";
+                        e.target.style.color = "#fff";
+                        e.target.style.transform = "translate(-50%, -50%) scale(1)";
+                    }}
+                    onClick={handleTravelClick}
                 >
-                    Explore the Galaxy
-                </div>
+                    Explorez la galaxie
+                </button>
             )}
-
-            {traveling && (
-                <div style={{
-                    position: "absolute",
-                    bottom: 20,
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    color: "#fff",
-                    fontSize: "14px",
-                    textAlign: "center",
-                    zIndex: 1,
-                    backgroundColor: "rgba(0, 0, 0, 0.7)",
-                    padding: "10px 20px",
-                    borderRadius: "8px"
-                }}>
-                     Click on planets to discover projects 
-                </div>
-            )}
+ 
+            <style>{`
+                @keyframes pulse {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.7; }
+                }
+            `}</style>
         </div>
     );
 };
-
+ 
 export default GalaxyCanvas;
