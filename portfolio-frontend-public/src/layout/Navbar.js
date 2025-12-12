@@ -25,7 +25,6 @@ const Navbar = () => {
                 <Link to="/" onClick={handleLinkClick}>Home</Link>
                 <Link to="/about" onClick={handleLinkClick}>About</Link>
                 <Link to="/contact" onClick={handleLinkClick}>Contact</Link>
-                <Link to="/projects" onClick={handleLinkClick}>Projets</Link>
             </div>
             <div className="menu-options">
                 <DarkModeToggle />
