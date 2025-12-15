@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "../assets/scss/_contact.scss";
-import contactImg from "../assets/images/contact.jpg";
 
 const Contact = () => {
   const [title, setTitle] = useState("");
@@ -53,6 +52,7 @@ const Contact = () => {
     <main
       className="page-wrap"
     >
+      <div className="bg-blur">
       <form className="contact-card" onSubmit={handleSubmit} noValidate>
        
         <div className="curved-title" aria-hidden="true">
@@ -117,6 +117,7 @@ const Contact = () => {
           )}
         </div>
       </form>
+      </div>
     </main>
   );
 };

@@ -1,15 +1,24 @@
 
 const Competences = ({competences}) => {
-
+    const grouped = competences.reduce((acc, comp) => {
+        if (!acc[comp.category]) acc[comp.category] = [];
+        acc[comp.category].push(comp);
+        return acc;
+    }, {});
     return ( 
         <div className="competences">
-            {competences && competences.map((competence) => (
-                <div className="competences" key={competence.id}>
-                    <h2>{competence.name}</h2>
+        {Object.entries(grouped).map(([category, comps]) => (
+            <div className="category" key={category}>
+                <h3>{category}</h3>
+                {comps.map((comp) => (
+                    <div className="comp" key={comp.id}>
+                    {comp.name}
+                    </div>
+                    ))}
                 </div>
-            ))}
+        ))}
         </div>
-     );
+    );
 }
  
 export default Competences;
