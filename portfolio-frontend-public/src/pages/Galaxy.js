@@ -11,6 +11,10 @@ const GalaxyCanvas = ({ projects }) => {
     const travelProgress = useRef(0);
     const starSpeedRef = useRef(0.3);
     const travelComplete = useRef(false); 
+    const zoomingToPlanet = useRef(false);
+    const zoomTarget = useRef(null);
+    const zoomStartPos = useRef(null);
+    const zoomStartTime = useRef(null);
  
     useEffect(() => {
         if (!projects || projects.length === 0 || !mountRef.current) return;
@@ -109,7 +113,7 @@ const GalaxyCanvas = ({ projects }) => {
             const mouse = new THREE.Vector2();
  
             renderer.domElement.addEventListener("click", (event) => {
-                if (!travelComplete.current) return;
+                if (!travelComplete.current || zoomingToPlanet.current) return;
  
                 const rect = renderer.domElement.getBoundingClientRect();
                 mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -119,7 +123,28 @@ const GalaxyCanvas = ({ projects }) => {
                 const intersects = raycaster.intersectObjects(planets);
                 if (intersects.length > 0) {
                     const planet = intersects[0].object;
-                    alert(`Projet: ${planet.userData.project.title}\n${planet.userData.project.description}`);
+                    if (controlsRef.current) {
+                        controlsRef.current.enabled = false;
+                    }
+
+                    const currentCamPos = cameraRef.current.position.clone();
+                    const targetPos = planet.position.clone();
+
+                    const direction = targetPos.clone().sub(currentCamPos).normalize();
+      
+                    const distance = currentCamPos.distanceTo(targetPos);
+
+                    const finalPos = currentCamPos.clone().add(direction.multiplyScalar(distance - 20));
+
+                    zoomingToPlanet.current = true;
+                    zoomTarget.current = planet;
+                    zoomStartPos.current = currentCamPos;
+                    zoomTarget.current.finalPosition = finalPos;
+                    zoomTarget.current.lookAtPos = targetPos;
+                    zoomStartTime.current = Date.now();
+                    
+                    console.log(`Zooming vers: ${planet.userData.project.title}`);
+                    console.log(`Distance: ${distance.toFixed(2)}, Final distance: 3`);
                 }
             });
         }
@@ -129,44 +154,42 @@ const GalaxyCanvas = ({ projects }) => {
  
         function animate() {
             if (!cameraRef.current) return;
- 
+
             if (traveling && !travelComplete.current) {
                 if (!travelStartTime) {
                     travelStartTime = Date.now();
                 }
- 
+
                 const elapsed = Date.now() - travelStartTime;
                 const t = Math.min(elapsed / travelDuration, 1);
                 travelProgress.current = t;
- 
+
                 if (t < 0.8) {
                     starSpeedRef.current = 0.3 + (t * 20);
                 } else {
                     starSpeedRef.current = 20 * (1 - t) * 5;
                 }
- 
+
                 const startZ = 2100;
                 const endZ = 30;
                 const easedT = easeInOutCubic(t);
                 cameraRef.current.position.z = startZ + (endZ - startZ) * easedT;
- 
-           
+
+        
                 const center = new THREE.Vector3();
                 planets.forEach(p => center.add(p.position));
                 center.divideScalar(planets.length);
                 cameraRef.current.lookAt(center);
- 
-                console.log(`Travel: ${(t * 100).toFixed(1)}%`);
- 
+
                 if (t >= 1) {
                     travelComplete.current = true;
                     travelStartTime = null;
                     starSpeedRef.current = 0.3;
-                   
+                
                     const center = new THREE.Vector3();
                     planets.forEach(p => center.add(p.position));
                     center.divideScalar(planets.length);
-                   
+                
                     if (!controlsRef.current) {
                         const controls = new OrbitControls(cameraRef.current, renderer.domElement);
                         controls.enableDamping = true;
@@ -179,11 +202,31 @@ const GalaxyCanvas = ({ projects }) => {
                     }
                 }
             }
- 
+
+            if (zoomingToPlanet.current && zoomTarget.current) {
+                const elapsed = Date.now() - zoomStartTime.current;
+                const duration = 2000;
+                const t = Math.min(elapsed / duration, 1);
+
+                const easedT = easeInOutCubic(t);
+                
+                cameraRef.current.position.lerpVectors(
+                    zoomStartPos.current, 
+                    zoomTarget.current.finalPosition, 
+                    easedT
+                );
+                
+                cameraRef.current.lookAt(zoomTarget.current.lookAtPos);
+        
+                if (t >= 1) {
+                    console.log(`Zoom terminé sur: ${zoomTarget.current.userData.project.title}`);
+                }
+            }
+
             const positions = starGeo.attributes.position.array;
             for (let i = 0; i < positions.length / 3; i++) {
                 positions[i * 3 + 2] += starSpeedRef.current;
-               
+            
                 if (positions[i * 3 + 2] > 1000) {
                     positions[i * 3 + 2] = -1000;
                     positions[i * 3] = Math.random() * 2000 - 1000;
@@ -191,17 +234,17 @@ const GalaxyCanvas = ({ projects }) => {
                 }
             }
             starGeo.attributes.position.needsUpdate = true;
-   
+
             if (!travelComplete.current) {
                 stars.rotation.z += 0.0005;
             }
- 
+
             planets.forEach(p => p.rotation.y += 0.01);
- 
-            if (travelComplete.current && controlsRef.current) {
+
+            if (travelComplete.current && controlsRef.current && !zoomingToPlanet.current) {
                 controlsRef.current.update();
             }
- 
+
             renderer.render(scene, cameraRef.current);
             animationId = requestAnimationFrame(animate);
         }

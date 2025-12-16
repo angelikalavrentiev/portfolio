@@ -20,10 +20,15 @@ body {
   height: 100%;
 }
 
+html {
+  background-color: black;
+}
+
 body {
   margin: 0;
   color: var(--text);
   min-height: 100vh;
+  background-color: black;
 }
 
 .nav-icon-1 span{
@@ -31,44 +36,33 @@ body {
 }
 
 .page-wrap {
-  position: relative;
   min-height: 100vh;
   display: flex;
-  padding: 2rem 0;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-}
-
-.bg-blur {
-  position: absolute;
-  inset: 0;
   background-image: url('../images/contact.jpg');
+  position: relative;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.page-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0; 
+  backdrop-filter: blur(8px) saturate(120%);
   z-index: 0;
 }
 
-.bg-blur::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  backdrop-filter: blur(8px) saturate(120%);
-  background: rgba(0, 0, 0, 0.2);
-}
-
 .contact-card {
-  position: relative;
-  z-index: 1;
-}
-
-
-.contact-card {
+  width: 100%;
   max-width: 100%;
-  height: auto;
+  height: 100%;
   position: relative;
   overflow: hidden;
+  padding-top: 5em;
+  padding-bottom: 5em;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -170,8 +164,11 @@ textarea {
 .curved-title {
   display: block;
   width: 100%;
+  justify-content: center;
   max-height: auto;
+  max-width: auto; 
   margin: 0 auto 0.35rem;
+  overflow: visible;
 
   svg {
     width: 100%;
@@ -198,7 +195,7 @@ textarea {
   margin: 2em;
 
   @media (min-width: 720px) {
-    width: 64%;
+    width: 90%;
     max-width: 680px;
     margin: 0 auto;
   }
@@ -222,11 +219,6 @@ textarea {
   }
 }
 
-@media (max-width: 420px) {
-  .contact-card {
-    padding: 1rem;
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -241,8 +233,8 @@ textarea {
   }
 }
 
-@media (min-width: 1000px) {
-  .curved-title svg {
-    height: 120px;
+@media (min-width: 900px) {
+.curved-title svg {
+    transform: translateY(-50px);
   }
 }
