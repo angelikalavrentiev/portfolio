@@ -107,9 +107,9 @@ function CompetencesPanel({ competences, onUpdate }) {
           className="input"
         >
           <option value="">-- Choisir une catégorie --</option>
-          <option value="front">Front</option>
-          <option value="back">Back</option>
-          <option value="other">Autres</option>
+          <option value="Front">Front</option>
+          <option value="Back">Back</option>
+          <option value="Other">Autres</option>
         </select>
         <input
           type="text"
@@ -146,9 +146,9 @@ function CompetencesPanel({ competences, onUpdate }) {
                     style={{ marginBottom: '8px' }}
                   >
                     <option value="">-- Choisir une catégorie --</option>
-                    <option value="front">Front</option>
-                    <option value="back">Back</option>
-                    <option value="other">Autres</option>
+                    <option value="Front">Front</option>
+                    <option value="Back">Back</option>
+                    <option value="Other">Autres</option>
                   </select>
                   <input
                     type="text"

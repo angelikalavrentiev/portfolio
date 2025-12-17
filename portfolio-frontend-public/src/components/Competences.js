@@ -14,6 +14,7 @@ const Competences = ({ competences }) => {
           <div className="category-content">
             {comps.map((comp) => (
               <div className="comp" key={comp.id}>
+                <img src={`http://localhost:8000${comp.image}`} alt={comp.name} />
                 {comp.name}
               </div>
             ))}
