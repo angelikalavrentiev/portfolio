@@ -39,10 +39,6 @@ const Navbar = () => {
                 </div>
                 <div className="menu-item">
                     <span className="menu-index">02</span>
-                    <Link to="/about" onClick={handleLinkClick}>A PROPOS</Link>
-                </div>
-                <div className="menu-item">
-                    <span className="menu-index">03</span>
                     <Link to="/contact" onClick={handleLinkClick}>CONTACT</Link>
                 </div>
             </div>

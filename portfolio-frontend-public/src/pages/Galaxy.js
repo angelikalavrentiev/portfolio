@@ -153,7 +153,6 @@ const GalaxyCanvas = ({ projects }) => {
                     const currentCamPos = cameraRef.current.position.clone();
                     const targetPos = planet.position.clone();
 
-                    // Position la caméra sur le côté de la planète
                     const offset = new THREE.Vector3(40, 10, 0);
                     const finalPos = targetPos.clone().add(offset);
 
@@ -380,6 +379,55 @@ const GalaxyCanvas = ({ projects }) => {
                     
                     <h2 style={{ marginTop: "0", color: "#00d4ff" }}>{selectedProject.title}</h2>
                     <div style={{ marginTop: "1.5rem", lineHeight: "1.6" }}>{selectedProject.description}</div>
+                    
+                    {selectedProject.lien_git && (
+                        <div style={{ marginTop: "1rem" }}>
+                            <a 
+                                href={selectedProject.lien_git} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                style={{
+                                    color: "#00d4ff",
+                                    textDecoration: "none",
+                                    border: "1px solid #00d4ff",
+                                    padding: "0.5rem 1rem",
+                                    borderRadius: "8px",
+                                    display: "inline-block",
+                                    transition: "all 0.3s"
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = "rgba(0, 212, 255, 0.2)";
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = "transparent";
+                                }}
+                            >
+                                🔗 Voir sur GitHub
+                            </a>
+                        </div>
+                    )}
+                    
+                    {selectedProject.images && selectedProject.images.length > 0 && (
+                        <div style={{ marginTop: "2rem" }}>
+                            <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginTop: "1rem" }}>
+                                {selectedProject.images.map((image, index) => (
+                                    <img 
+                                        key={index} 
+                                        src={`http://localhost:8000/img_projects/${image.src}`} 
+                                        alt={image.alt || selectedProject.title}
+                                        style={{
+                                            maxWidth: "300px",
+                                            maxHeight: "200px",
+                                            objectFit: "cover",
+                                            borderRadius: "8px",
+                                            border: "1px solid rgba(0, 212, 255, 0.5)"
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    
                     {selectedProject.competences && selectedProject.competences.length > 0 && (
                         <div style={{ marginTop: "2rem" }}>
                             <h3 style={{ color: "#00d4ff", fontSize: "1.2rem" }}>Compétences:</h3>

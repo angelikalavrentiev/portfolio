@@ -6,9 +6,7 @@ import "./assets/scss/main.scss";
 import Navbar from "./layout/Navbar";
 import Footer from "./layout/Footer";
 import Home from "./layout/Home";
-import About from "./pages/About";
 import Projects from "./pages/Galaxy";
-import ProjectDetail from "./pages/ProjectDetail";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/404";
 
@@ -34,7 +32,6 @@ function AppContent() {
   const anyFromCache = projectsFromCache || competencesFromCache || profilFromCache;
   const readyToCheckImages = sceneReady && !anyLoading && !anyFromCache;
 
-  // Reset loading states when navigating to home
   useEffect(() => {
     if (location.pathname === '/') {
       setSceneReady(false);
@@ -104,12 +101,10 @@ function AppContent() {
         <div className="content">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
             <Route
               path="/projects"
               element={<Projects projects={projects} />}
             />
-            <Route path="/projects/:id" element={<ProjectDetail />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

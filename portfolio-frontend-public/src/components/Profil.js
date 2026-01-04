@@ -1,5 +1,6 @@
+import CV from './CV';
+
 const Profil = ({profil}) => {
-    // Séparer le nom en prénom et nom si possible
     const nameParts = profil.title ? profil.title.split(' ') : ['', ''];
     const firstName = nameParts[0] || '';
     const lastName = nameParts.slice(1).join(' ') || '';
@@ -17,7 +18,7 @@ const Profil = ({profil}) => {
                 <div className="profil-content">
                     <p className="description">{profil.description}</p>
                     <div className="profil-actions">
-                        <a href="/about" className="btn btn-primary">En savoir plus</a>
+                        <CV />
                         <a href="/contact" className="btn btn-secondary">Contactez-moi</a>
                     </div>
                 </div>

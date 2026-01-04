@@ -117,7 +117,7 @@ public function createProject(Request $request, EntityManagerInterface $em): Jso
     $project->setTitle($data['title']);
     $project->setDescription($data['description']);
     $project->setDates($data['dates'] ?? null);
-    $project->setLienGit($data['lienGit'] ?? null);
+    $project->setLienGit($data['lien_git'] ?? null);
     $project->setAuthor($this->getUser());
 
     $em->persist($project);
@@ -128,7 +128,7 @@ public function createProject(Request $request, EntityManagerInterface $em): Jso
             'title' => $project->getTitle(),
             'description' => $project->getDescription(),
             'dates' => $project->getDates(),
-            'lienGit' => $project->getLienGit(),
+            'lien_git' => $project->getLienGit(),
         ], 201);
 }
 
@@ -152,7 +152,7 @@ public function updateProject(int $id, Request $request, ProjectsRepository $pro
     if (isset($data['title'])) $project->setTitle($data['title']);
     if (isset($data['description'])) $project->setDescription($data['description']);
     if (isset($data['dates'])) $project->setDates($data['dates']);
-    if (isset($data['liengit'])) $project->setLienGit($data['liengit']);
+    if (isset($data['lien_git'])) $project->setLienGit($data['lien_git']);
 
     $em->flush();
 
