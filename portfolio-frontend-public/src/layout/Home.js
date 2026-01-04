@@ -10,8 +10,9 @@ const Home = () => {
 
     return (  
         <div className="home">
-            <h2>Hi</h2>
-            {profil && <Profil profil={profil} />}
+            <section className="hero-section">
+                {profil && <Profil profil={profil} />}
+            </section>
             {competences && <Competences competences={competences} />}
             {projects && <Galaxy projects={projects} />}
         </div>

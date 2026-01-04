@@ -15,18 +15,19 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
-            lazy: true
+        cors_preflight:
+            pattern: ^/api/
+            methods: [OPTIONS]
+            security: false
+        login:
+            pattern: ^/api/login$
+            stateless: true
+            security: false
+        api:
+            pattern: ^/api
+            stateless: true
             provider: app_user_provider
-            stateless: false
-            json_login:
-                check_path: /api/login_check
-                username_path: email
-                password_path: password
-            logout:
-                path: /api/auth/logout
-                target: /api/auth/check
-
+            jwt: ~
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -38,14 +39,17 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login$, roles: PUBLIC_ACCESS }
         - { path: ^/api/projects, roles: PUBLIC_ACCESS }
         - { path: ^/api/competences, roles: PUBLIC_ACCESS }
+        - { path: ^/api/images, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/messages, roles: PUBLIC_ACCESS, methods: [POST] }
         - { path: ^/api/admin/view-cv, roles: PUBLIC_ACCESS }
-        - { path: ^/api/admin/download-cv, roles: PUBLIC_ACCESS } 
-        - { path: ^/api/profil, roles: PUBLIC_ACCESS }
+        - { path: ^/api/admin/download-cv, roles: PUBLIC_ACCESS }
+        - { path: ^/api/profil, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/profil, roles: ROLE_ADMIN, methods: [POST] }
         - { path: ^/api/auth/me, roles: ROLE_ADMIN }
+        - { path: ^/api/auth/check, roles: ROLE_ADMIN }
         - { path: ^/api/, roles: ROLE_ADMIN }
 
 when@test:

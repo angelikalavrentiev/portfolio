@@ -1,0 +1,117 @@
+.dashboard {
+  background-color: $bg-color;
+  color: $text-color;
+  font-family: 'Arial', sans-serif;
+  min-height: 100vh;
+  padding: 2rem;
+
+  h1 {
+    color: $highlight-color;
+    margin-bottom: 1.5rem;
+  }
+
+  .header {
+    margin-bottom: 2rem;
+
+    p {
+      font-size: 1.1rem;
+      color: lighten($text-color, 10%);
+    }
+  }
+
+  .container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .card {
+    background-color: lighten($primary-color, 5%);
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px $shadow-color;
+
+    h2 {
+      color: $highlight-color;
+      margin-bottom: 1rem;
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+
+      input, textarea, select {
+        margin-bottom: 1rem;
+        padding: 0.6rem;
+        border-radius: 5px;
+        border: 1px solid $input-border;
+        background-color: $input-bg;
+        color: $text-color;
+
+        &:focus {
+          border-color: $highlight-color;
+          outline: none;
+          box-shadow: 0 0 5px $highlight-color;
+        }
+      }
+
+      button {
+        margin-top: 0.5rem;
+        padding: 0.6rem;
+        border-radius: 5px;
+        border: none;
+        background-color: $highlight-color;
+        color: $primary-color;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s;
+
+        &:hover {
+          background-color: $btn-hover;
+        }
+      }
+    }
+
+    .list {
+      margin-top: 1rem;
+
+      .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem;
+        border-bottom: 1px solid $input-border;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        strong {
+          color: $highlight-color;
+        }
+
+        button {
+          margin-left: 0.5rem;
+        }
+      }
+    }
+  }
+}
+
+.navbar {
+  background-color: $primary-color;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  a {
+    color: $text-color;
+    text-decoration: none;
+    margin: 0 1rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

@@ -1,0 +1,127 @@
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, $primary-color 0%, darken($primary-color, 5%) 100%);
+  color: $text-color;
+
+  .login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+
+    h1 {
+      margin-bottom: 2rem;
+      color: $highlight-color;
+      text-align: center;
+      font-size: 2rem;
+    }
+
+    .error-message {
+      background-color: rgba(255, 68, 68, 0.1);
+      border: 2px solid #ff4444;
+      color: #ff6b6b;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      background-color: lighten($primary-color, 5%);
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px $shadow-color;
+
+      .form-group {
+        margin-bottom: 1.5rem;
+
+        &:last-of-type {
+          margin-bottom: 2rem;
+        }
+      }
+
+      .login-input {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 2px solid transparent;
+        background-color: $input-bg;
+        color: $text-color;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+
+        &:focus {
+          border-color: $input-border;
+          outline: none;
+          box-shadow: 0 0 8px rgba($input-border, 0.3);
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        &::placeholder {
+          color: rgba($text-color, 0.5);
+        }
+      }
+
+      .login-button {
+        padding: 1rem;
+        border-radius: 8px;
+        border: none;
+        background: linear-gradient(135deg, $input-border 0%, darken($input-border, 10%) 100%);
+        color: $primary-color;
+        font-weight: bold;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba($input-border, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba($input-border, 0.5);
+        }
+
+        &:active:not(:disabled) {
+          transform: translateY(0);
+        }
+
+        &:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+          transform: none;
+        }
+
+        .button-spinner {
+          width: 16px;
+          height: 16px;
+          border: 2px solid rgba($primary-color, 0.3);
+          border-top: 2px solid $primary-color;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

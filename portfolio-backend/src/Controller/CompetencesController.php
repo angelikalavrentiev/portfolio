@@ -22,11 +22,12 @@ public function competences(CompetencesRepository $competencesRepository): JsonR
 
     $data = [];
     foreach ($competences as $competence) {
+        $image = $competence->getImage();
         $data[] = [
             'id' => $competence->getId(),
             'name' => $competence->getName(),
             'category' => $competence->getCategory(),
-            'image' => $competence->getImage()
+            'image' => $image ? '/uploads/photos/' . ltrim($image, '/') : null,
         ];
     }
 
@@ -38,6 +39,7 @@ public function createCompetence(Request $request, EntityManagerInterface $em): 
 {
 
     $data = json_decode($request->getContent(), true);
+    $imageFile = $request->files->get('image');
     
     if (!isset($data['name']) || !isset($data['category'])) {
         return $this->json(['error' => 'Nom et catégorie requis'], 400);
@@ -46,8 +48,10 @@ public function createCompetence(Request $request, EntityManagerInterface $em): 
     $competence = new Competences();
     $competence->setName($data['name']);
     $competence->setCategory($data['category']);
-    $competence->setImage($data['image'] ?? null);
     $competence->setAuthor($this->getUser());
+    if (!empty($data['image'])) {
+        $competence->setImage(ltrim($data['image'], '/'));
+    }
 
     $em->persist($competence);
     $em->flush();
@@ -56,7 +60,7 @@ public function createCompetence(Request $request, EntityManagerInterface $em): 
             'id' => $competence->getId(),
             'name' => $competence->getName(),
             'category' => $competence->getCategory(),
-            'image' => $competence->getImage(),
+            'image' => $competence->getImage() ? '/uploads/photos/' . $competence->getImage() : null,
         ], 201);
 }
 
@@ -79,7 +83,9 @@ public function updateCompetence(int $id, Request $request, CompetencesRepositor
 
     if (isset($data['name'])) $competence->setName($data['name']);
     if (isset($data['category'])) $competence->setCategory($data['category']);
-    if (isset($data['image'])) $competence->setImage($data['image']);
+    if (isset($data['image'])) {
+        $competence->setImage(ltrim($data['image'], '/'));
+    }
 
     $em->flush();
 

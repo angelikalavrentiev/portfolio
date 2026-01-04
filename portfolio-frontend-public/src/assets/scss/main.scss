@@ -2,6 +2,9 @@
 @import './menuburger.scss';
 @import './contact.scss';
 @import './competences.scss';
+@import './profil.scss';
+@import './footer.scss';
+@import './home.scss';
 
 @tailwind base;
 @tailwind components;
@@ -54,44 +57,41 @@
         }
     }
 
-    .header-container {
-        .burger-toggle {
-            @apply fixed top-4 right-4 z-50; 
-        }
+    .loader {
+        position: fixed;
+        inset: 0;
         display: flex;
-        justify-content: right;
-        position: relative;
-        z-index: 9999;
-            .navbar {
-            @apply fixed top-0 left-0 w-full h-full;
-            background-color: #{$light}; 
-            display: flex;
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center;
-
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease-in-out;
-                .menu-options {
-                    @apply mt-8; 
-                }
-                .links {
-                    @apply flex flex-col items-center gap-4 text-3xl;
-                }
-                .dark & {
-                background-color: #{$dark};
-            }
-
-            }
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+        color: #e6f0ff;
+        z-index: 99999;
     }
-}
 
-html.burger .navbar {
-    opacity: 1;
-    pointer-events: auto;
+    .loader-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+    }
 
-    .dark & {
-        background-color: #{$dark};
+    .spinner {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 6px solid rgba(255,255,255,0.12);
+        border-top-color: #60a5fa;
+        animation: spin 1s linear infinite;
+        box-shadow: 0 6px 24px rgba(2,6,23,0.6);
+    }
+
+    .loader-text {
+        font-size: 1.125rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
 }

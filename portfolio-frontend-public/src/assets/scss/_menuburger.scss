@@ -19,6 +19,10 @@
     .dark & {
          --icon-color: #fff;
     }
+    
+    .on-contact-page & {
+         background-color: #fff;
+    }
 }
 .nav-icon-1:hover span{
   transform: scale(1.2);
@@ -87,4 +91,241 @@
 .nav-icon-1.open span:nth-child(8) {
   left: 18px;
   bottom: 6px;
+}
+
+// Menu hero overlay
+.header-container {
+    position: relative;
+    z-index: 1000;
+
+    .burger-toggle {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 99999;
+    }
+
+    .btn-toggle {
+        position: fixed;
+        top: 18px;
+        right: 70px;
+        z-index: 99999;
+        background: transparent;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 8px;
+        transition: transform 0.2s ease;
+    }
+
+    .btn-toggle:hover {
+        transform: scale(1.1);
+    }
+
+    .navbar.menu-hero {
+        position: fixed;
+        inset: 0;
+        background: $light;
+        color: $text-light;
+        z-index: 9999;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        padding: 36px clamp(18px, 4vw, 64px);
+        gap: 32px;
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(1.01);
+        transition: opacity 0.35s ease, transform 0.35s ease, background 0.35s ease, color 0.35s ease;
+        overflow: hidden;
+
+        .dark & {
+            background: $dark;
+            color: $text-dark;
+        }
+    }
+
+    .menu-blob {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse at 30% 30%, rgba(62, 63, 134, 0.4), rgba(62, 63, 134, 0) 50%),
+                    radial-gradient(ellipse at 70% 60%, rgba(98, 115, 163, 0.35), rgba(98, 115, 163, 0) 45%),
+                    radial-gradient(ellipse at 50% 80%, rgba(16, 24, 63, 0.3), rgba(16, 24, 63, 0) 40%),
+                    $light;
+        filter: blur(60px);
+        opacity: 0.95;
+        z-index: 0;
+
+        .dark & {
+            background: radial-gradient(ellipse at 50% 40%, rgba(255,255,255,0.05), rgba(255,255,255,0) 40%),
+                        radial-gradient(ellipse at 70% 60%, rgba(255,255,255,0.05), rgba(255,255,255,0) 35%),
+                        $dark;
+            filter: blur(4px);
+        }
+    }
+
+    .menu-header,
+    .menu-list,
+    .menu-social {
+        position: relative;
+        z-index: 1;
+    }
+
+    .menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        font-size: 0.95rem;
+        letter-spacing: 0.02em;
+        color: rgba(0, 0, 0, 0.65);
+
+        .dark & {
+            color: rgba(255, 255, 255, 0.65);
+        }
+    }
+
+    .menu-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .brand-mark {
+        width: 32px;
+        height: 32px;
+        border: 1px solid rgba(0, 0, 0, 0.25);
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        color: $text-light;
+
+        .dark & {
+            border-color: rgba(255, 255, 255, 0.25);
+            color: $text-dark;
+        }
+    }
+
+    .brand-name {
+        color: $text-light;
+        letter-spacing: 0.04em;
+
+        .dark & {
+            color: $text-dark;
+        }
+    }
+
+    .menu-actions {
+        display: inline-flex;
+        gap: 14px;
+        align-items: center;
+        color: $text-light;
+
+        .dark & {
+            color: $text-dark;
+        }
+    }
+
+    .menu-list {
+        display: grid;
+        gap: 18px;
+        align-self: center;
+        justify-items: center;
+    }
+
+    .menu-item {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .menu-index {
+        font-size: 0.95rem;
+        color: rgba(0, 0, 0, 0.55);
+        letter-spacing: 0.08em;
+
+        .dark & {
+            color: rgba(255, 255, 255, 0.55);
+        }
+    }
+
+    .menu-item a {
+        text-decoration: none;
+        color: $text-light;
+        font-size: clamp(2.2rem, 6vw, 3.4rem);
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        transition: transform 0.16s ease, opacity 0.16s ease, color 0.16s ease;
+
+        .dark & {
+            color: $text-dark;
+        }
+    }
+
+    .menu-item a:hover {
+        transform: translateX(6px);
+        opacity: 0.88;
+        color: $primary-light;
+
+        .dark & {
+            color: $primary-dark;
+        }
+    }
+
+    .menu-social {
+        display: flex;
+        gap: 18px;
+        justify-content: center;
+        font-size: 0.95rem;
+        color: $text-light;
+
+        .dark & {
+            color: $text-dark;
+        }
+    }
+
+    .menu-social a {
+        text-decoration: none;
+        color: $text-light;
+        letter-spacing: 0.03em;
+        transition: color 0.16s ease;
+
+        .dark & {
+            color: $text-dark;
+        }
+    }
+
+    .menu-social a:hover {
+        color: $primary-light;
+
+        .dark & {
+            color: $primary-dark;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .navbar.menu-hero {
+            padding: 24px 18px 32px;
+            gap: 24px;
+        }
+
+        .menu-list {
+            gap: 12px;
+        }
+
+        .menu-item a {
+            font-size: clamp(1.8rem, 9vw, 2.6rem);
+        }
+    }
+}
+
+html.burger .navbar.menu-hero {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: scale(1) !important;
+}
+
+html.burger body {
+    overflow: hidden;
 }

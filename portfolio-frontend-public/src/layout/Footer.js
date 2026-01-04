@@ -13,7 +13,7 @@ const Footer = () => {
             <div className="links">
                 <h2>Looking for internship</h2>
                 <Link to="/contact">Contact</Link>
-                <Link to="/">GitHub</Link>
+                <a href="https://github.com/angelikalavrentiev">GitHub</a>
                 <Link to="/about">CV</Link>
             </div>
         </nav>    

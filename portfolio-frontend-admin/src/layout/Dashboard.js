@@ -36,11 +36,18 @@ const loadAllData = async () => {
     }
   };
   if (loading) {
-    return <div className="loading"> Chargement...</div>;
+    return (
+      <div className="dashboard-loading">
+        <div className="loading-content">
+          <div className="spinner"></div>
+          <p className="loading-text">Chargement du tableau de bord...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div>
+    <div className="dashboard">
       <h1>Dashboard Admin</h1>
       <div className="header">
         <h1> Mon Dashboard</h1>

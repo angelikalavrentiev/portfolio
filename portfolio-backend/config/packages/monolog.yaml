@@ -14,7 +14,11 @@ when@dev:
                 type: console
                 process_psr_3_messages: false
                 channels: ["!event", "!doctrine", "!console"]
-
+            jwt:
+                type: stream
+                path: "%kernel.logs_dir%/jwt.log"
+                level: debug
+                channels: ["security"]
 when@test:
     monolog:
         handlers:

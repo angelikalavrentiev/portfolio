@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../assets/scss/_contact.scss";
 
 const Contact = () => {
@@ -8,6 +8,13 @@ const Contact = () => {
   const [isPending, setIsPending] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    document.body.classList.add('on-contact-page');
+    return () => {
+      document.body.classList.remove('on-contact-page');
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,6 +56,7 @@ const Contact = () => {
   };
 
   return (
+    <div className="contact-page">
     <main
       className="page-wrap"
     >
@@ -119,6 +127,7 @@ const Contact = () => {
       </form>
       </div>
     </main>
+    </div>
   );
 };
 

@@ -18,7 +18,15 @@ public function projects(
     ProjectsRepository $projectsRepository
     ): JsonResponse
 {
-    $projects = $projectsRepository->findAll();
+    $projects = $projectsRepository->createQueryBuilder('p')
+        ->leftJoin('p.competences', 'c')
+        ->addSelect('c')
+        ->leftJoin('p.images', 'i')
+        ->addSelect('i')
+        ->orderBy('p.id', 'DESC')
+        ->setMaxResults(20)
+        ->getQuery()
+        ->getResult();
 
     $data = [];
 

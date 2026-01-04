@@ -5,6 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 const GalaxyCanvas = ({ projects }) => {
     const mountRef = useRef(null);
     const [traveling, setTraveling] = useState(false);
+    const [selectedProject, setSelectedProject] = useState(null);
  
     const cameraRef = useRef(null);
     const controlsRef = useRef(null);
@@ -12,12 +13,23 @@ const GalaxyCanvas = ({ projects }) => {
     const starSpeedRef = useRef(0.3);
     const travelComplete = useRef(false); 
     const zoomingToPlanet = useRef(false);
+    const cameraLocked = useRef(false);
     const zoomTarget = useRef(null);
     const zoomStartPos = useRef(null);
     const zoomStartTime = useRef(null);
  
     useEffect(() => {
-        if (!projects || projects.length === 0 || !mountRef.current) return;
+        const rawList = Array.isArray(projects)
+            ? projects
+            : projects && projects['hydra:member']
+            ? projects['hydra:member']
+            : Object.values(projects || {});
+
+        const projectList = (rawList || []).filter(p => p && typeof p === 'object');
+        const validProjects = projectList.filter(p => p.title || p.name || (p.id !== undefined));
+        if (!validProjects || validProjects.length === 0 || !mountRef.current) return;
+
+        const projectsToUse = validProjects;
  
         let scene, renderer, starGeo, stars;
         let animationId;
@@ -73,40 +85,51 @@ const GalaxyCanvas = ({ projects }) => {
         }
  
         function createPlanets() {
-            projects.forEach((project, idx) => {
-                const geometry = new THREE.SphereGeometry(15, 26, 26);
+            projectList.forEach((project, idx) => {
+                if (!project || typeof project !== 'object') {
+                    return;
+                }
+                const geometry = new THREE.SphereGeometry(15, 32, 32);
                 const color = new THREE.Color();
-                color.setHSL(Math.random(), 1, 0.5);
+                color.setHSL(Math.random(), 0.8, 0.5);
  
                 const material = new THREE.MeshStandardMaterial({
                     color: color,
                     emissive: color,
-                    emissiveIntensity: 0.5,
-                    metalness: 0.3,
-                    roughness: 0.4
+                    emissiveIntensity: 0.05,
+                    metalness: 0.5,
+                    roughness: 0.3,
+                    flatShading: false
                 });
  
                 const mesh = new THREE.Mesh(geometry, material);
-                const x = idx % 2 === 0 ? -80 : 80;
+               
+                const radius = 150;
+                const totalProjects = projectList.filter(p => p && typeof p === 'object').length;
+                const angleStep = Math.PI / Math.max(totalProjects + 1, 2);
+                const angle = (idx + 1) * angleStep;
+                
+                const x = Math.cos(angle) * radius - radius / 2;
                 const y = 0;
-                const z = -200 - idx * 150;
+                const z = -Math.sin(angle) * radius - 100;
+                
                 mesh.position.set(x, y, z);
                 mesh.userData = { project };
- 
-                console.log(`Planet ${idx}: "${project.title}" at (${x}, ${y}, ${z})`);
+
+                const title = project.title || project.name || 'Untitled';
                 scene.add(mesh);
                 planets.push(mesh);
             });
  
-            const light = new THREE.PointLight(0xffffff, 3, 1500);
+            const light = new THREE.PointLight(0xffffff, 2.5, 1500);
             light.position.set(0, 0, 0);
             scene.add(light);
  
-            const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
             scene.add(ambientLight);
  
-            const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-            dirLight.position.set(0, 100, 100);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            dirLight.position.set(50, 100, 100);
             scene.add(dirLight);
  
             const raycaster = new THREE.Raycaster();
@@ -130,11 +153,9 @@ const GalaxyCanvas = ({ projects }) => {
                     const currentCamPos = cameraRef.current.position.clone();
                     const targetPos = planet.position.clone();
 
-                    const direction = targetPos.clone().sub(currentCamPos).normalize();
-      
-                    const distance = currentCamPos.distanceTo(targetPos);
-
-                    const finalPos = currentCamPos.clone().add(direction.multiplyScalar(distance - 20));
+                    // Position la caméra sur le côté de la planète
+                    const offset = new THREE.Vector3(40, 10, 0);
+                    const finalPos = targetPos.clone().add(offset);
 
                     zoomingToPlanet.current = true;
                     zoomTarget.current = planet;
@@ -143,8 +164,7 @@ const GalaxyCanvas = ({ projects }) => {
                     zoomTarget.current.lookAtPos = targetPos;
                     zoomStartTime.current = Date.now();
                     
-                    console.log(`Zooming vers: ${planet.userData.project.title}`);
-                    console.log(`Distance: ${distance.toFixed(2)}, Final distance: 3`);
+                    const zoomTitle = planet.userData?.project?.title || planet.userData?.project?.name || 'Untitled';
                 }
             });
         }
@@ -219,7 +239,16 @@ const GalaxyCanvas = ({ projects }) => {
                 cameraRef.current.lookAt(zoomTarget.current.lookAtPos);
         
                 if (t >= 1) {
-                    console.log(`Zoom terminé sur: ${zoomTarget.current.userData.project.title}`);
+                    const project = zoomTarget.current?.userData?.project;
+                    if (project) {
+                        setSelectedProject(project);
+                    }
+                    cameraLocked.current = true;
+                    zoomingToPlanet.current = false;
+                    if (controlsRef.current) {
+                        controlsRef.current.enabled = false;
+                    }
+                    zoomTarget.current = null;
                 }
             }
 
@@ -241,7 +270,7 @@ const GalaxyCanvas = ({ projects }) => {
 
             planets.forEach(p => p.rotation.y += 0.01);
 
-            if (travelComplete.current && controlsRef.current && !zoomingToPlanet.current) {
+            if (travelComplete.current && controlsRef.current && !zoomingToPlanet.current && !cameraLocked.current) {
                 controlsRef.current.update();
             }
 
@@ -283,6 +312,17 @@ const GalaxyCanvas = ({ projects }) => {
         travelProgress.current = 0;
         travelComplete.current = false; 
     };
+
+    const handleBackToPlanets = () => {
+        setSelectedProject(null);
+        cameraLocked.current = false;
+        if (cameraRef.current && controlsRef.current) {
+            controlsRef.current.enabled = true;
+            const center = new THREE.Vector3();
+            cameraRef.current.position.set(0, 0, 30);
+            controlsRef.current.target.copy(center);
+        }
+    };
  
     return (
         <div style={{
@@ -293,6 +333,73 @@ const GalaxyCanvas = ({ projects }) => {
             backgroundColor: "#000"
         }}>
             <div ref={mountRef} style={{ width: "100%", height: "100%" }} />
+
+            {selectedProject && (
+                <div style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    zIndex: 20,
+                    backgroundColor: "rgba(10, 31, 68, 0.95)",
+                    color: "#fff",
+                    padding: "3rem",
+                    borderRadius: "20px",
+                    maxWidth: "600px",
+                    width: "90%",
+                    maxHeight: "80%",
+                    overflowY: "auto",
+                    border: "2px solid rgba(0, 212, 255, 0.5)",
+                    boxShadow: "0 10px 50px rgba(0, 0, 0, 0.5)"
+                }}>
+                    <button
+                        onClick={handleBackToPlanets}
+                        style={{
+                            position: "absolute",
+                            top: "1rem",
+                            right: "1rem",
+                            padding: "0.5rem 1.5rem",
+                            backgroundColor: "transparent",
+                            color: "#00d4ff",
+                            border: "2px solid #00d4ff",
+                            borderRadius: "50px",
+                            cursor: "pointer",
+                            fontSize: "1rem",
+                            fontWeight: "bold",
+                            transition: "all 0.3s"
+                        }}
+                        onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = "rgba(0, 212, 255, 0.1)";
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = "transparent";
+                        }}
+                    >
+                        ← Retour aux planètes
+                    </button>
+                    
+                    <h2 style={{ marginTop: "0", color: "#00d4ff" }}>{selectedProject.title}</h2>
+                    <div style={{ marginTop: "1.5rem", lineHeight: "1.6" }}>{selectedProject.description}</div>
+                    {selectedProject.competences && selectedProject.competences.length > 0 && (
+                        <div style={{ marginTop: "2rem" }}>
+                            <h3 style={{ color: "#00d4ff", fontSize: "1.2rem" }}>Compétences:</h3>
+                            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "1rem" }}>
+                                {selectedProject.competences.map(c => (
+                                    <span key={c.id} style={{
+                                        padding: "0.5rem 1rem",
+                                        backgroundColor: "rgba(0, 212, 255, 0.2)",
+                                        borderRadius: "20px",
+                                        fontSize: "0.9rem",
+                                        border: "1px solid rgba(0, 212, 255, 0.5)"
+                                    }}>
+                                        {c.name}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
  
             {!traveling && !travelComplete.current && (
                 <button

@@ -1,28 +1,21 @@
-import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import {getMe} from "./apiFetch.js";
+import { useAuth } from "./AuthContext";
 
 const ProtectedRoute = ({ children }) => {
-  const [isAuth, setIsAuth] = useState(null);
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      await getMe();
-      setIsAuth(true);
-    } catch (error) {
-      setIsAuth(false);
-    }
-  };
-
-  if (isAuth === null) {
-    return <div style={{ textAlign: 'center', padding: '50px' }}>Vérification...</div>;
+  if (loading) {
+    return (
+      <div className="verification-screen">
+        <div className="verification-content">
+          <div className="spinner"></div>
+          <p className="verification-text">Vérification de votre session...</p>
+        </div>
+      </div>
+    );
   }
 
-  if (!isAuth) {
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 

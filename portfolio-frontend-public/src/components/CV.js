@@ -5,7 +5,6 @@ export default function CVButton() {
             const res = await fetch("http://localhost:8000/api/admin/download-cv");
             if (!res.ok) {
                 const errorData = await res.text();
-                console.warn("CV introuvable");
                 return;
             }
 
@@ -22,7 +21,6 @@ export default function CVButton() {
             window.URL.revokeObjectURL(url);
 
         } catch (err) {
-            console.error("Erreur lors de l'ouverture et du téléchargement du CV :", err);
         }
     };
 

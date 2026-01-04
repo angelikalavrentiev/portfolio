@@ -1,0 +1,173 @@
+.verification-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, $primary-color 0%, darken($primary-color, 5%) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+
+  .verification-content {
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba($input-border, 0.2);
+      border-top: 4px solid $input-border;
+      border-radius: 50%;
+      margin: 0 auto 2rem;
+      animation: spin 1s linear infinite;
+    }
+
+    .verification-text {
+      color: $text-color;
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin: 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+  }
+}
+
+.dashboard-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: $bg-color;
+
+  .loading-content {
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba($input-border, 0.2);
+      border-top: 4px solid $input-border;
+      border-radius: 50%;
+      margin: 0 auto 2rem;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-text {
+      color: $text-color;
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin: 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+// Loader générique pour les composants
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  min-height: 300px;
+
+  .loader {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba($input-border, 0.2);
+    border-top: 4px solid $input-border;
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+    animation: spin 1s linear infinite;
+  }
+
+  .loading-text {
+    color: $text-color;
+    font-size: 1rem;
+    opacity: 0.8;
+  }
+}
+
+// Skeleton loader pour les cartes
+.skeleton-card {
+  background-color: lighten($primary-color, 5%);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px $shadow-color;
+  animation: shimmer 1.5s infinite;
+
+  .skeleton-title {
+    height: 24px;
+    width: 60%;
+    background: linear-gradient(
+      90deg,
+      rgba($input-border, 0.1) 25%,
+      rgba($input-border, 0.2) 50%,
+      rgba($input-border, 0.1) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+
+  .skeleton-text {
+    height: 16px;
+    width: 100%;
+    background: linear-gradient(
+      90deg,
+      rgba($input-border, 0.1) 25%,
+      rgba($input-border, 0.2) 50%,
+      rgba($input-border, 0.1) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+
+    &:last-child {
+      width: 80%;
+    }
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

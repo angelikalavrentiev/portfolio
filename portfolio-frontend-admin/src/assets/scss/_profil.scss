@@ -1,0 +1,247 @@
+.profil-card {
+  h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    color: $highlight-color;
+    border-bottom: 2px solid $input-border;
+    padding-bottom: 0.8rem;
+  }
+
+  .profil-view {
+    .profil-info {
+      margin-bottom: 2rem;
+
+      .info-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba($input-border, 0.2);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .label {
+          font-weight: bold;
+          color: $input-border;
+          min-width: 150px;
+          font-size: 1rem;
+        }
+
+        .value {
+          flex: 1;
+          color: $text-color;
+          line-height: 1.6;
+          word-wrap: break-word;
+        }
+
+        .cv-link {
+          color: $input-border;
+          text-decoration: none;
+          font-weight: 500;
+          transition: color 0.3s ease;
+
+          &:hover {
+            color: lighten($input-border, 15%);
+            text-decoration: underline;
+          }
+        }
+
+        .photo-preview {
+          margin-top: 0.5rem;
+          
+          img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border: 2px solid $input-border;
+          }
+        }
+      }
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 0.8rem;
+      background: linear-gradient(135deg, $input-border 0%, darken($input-border, 10%) 100%);
+      color: $primary-color;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba($input-border, 0.3);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba($input-border, 0.5);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  .profil-edit {
+    .form-group {
+      margin-bottom: 1.5rem;
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: $input-border;
+        font-weight: 600;
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
+      }
+
+      .input {
+        width: 100%;
+        padding: 0.8rem;
+        border: 2px solid transparent;
+        background-color: $input-bg;
+        color: $text-color;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+
+        &:focus {
+          border-color: $input-border;
+          outline: none;
+          box-shadow: 0 0 8px rgba($input-border, 0.3);
+          background-color: lighten($input-bg, 3%);
+        }
+
+        &::placeholder {
+          color: rgba($text-color, 0.5);
+        }
+      }
+
+      .textarea {
+        resize: vertical;
+        min-height: 120px;
+        font-family: inherit;
+        line-height: 1.6;
+      }
+
+     
+      .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+
+        .file-input {
+          position: absolute;
+          left: -9999px;
+          opacity: 0;
+        }
+
+        .file-label {
+          display: block;
+          padding: 0.8rem;
+          background-color: $input-bg;
+          border: 2px dashed $input-border;
+          border-radius: 6px;
+          text-align: center;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          color: $text-color;
+
+          &:hover {
+            background-color: lighten($input-bg, 5%);
+            border-color: lighten($input-border, 15%);
+          }
+        }
+
+        .file-input:focus + .file-label {
+          border-color: $input-border;
+          box-shadow: 0 0 8px rgba($input-border, 0.3);
+        }
+      }
+    }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+
+      .btn {
+        flex: 1;
+        padding: 0.9rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        &.btn-success {
+          background: linear-gradient(135deg, #00ff88 0%, #00cc6e 100%);
+          color: $primary-color;
+          box-shadow: 0 3px 10px rgba(0, 255, 136, 0.3);
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.5);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+
+        &.btn-secondary {
+          background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+          color: $text-color;
+          box-shadow: 0 3px 10px rgba(108, 117, 125, 0.3);
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.5);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .profil-card {
+    .profil-view {
+      .profil-info {
+        .info-item {
+          flex-direction: column;
+
+          .label {
+            min-width: auto;
+            margin-bottom: 0.5rem;
+          }
+        }
+      }
+    }
+
+    .profil-edit {
+      .button-group {
+        flex-direction: column;
+
+        .btn {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

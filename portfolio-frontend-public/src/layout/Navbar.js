@@ -20,14 +20,35 @@ const Navbar = () => {
             <div className="burger-toggle">
                 <BurgerMenuToggle />
             </div> 
-        <nav className="navbar">
-            <div className="links">
-                <Link to="/" onClick={handleLinkClick}>Home</Link>
-                <Link to="/about" onClick={handleLinkClick}>About</Link>
-                <Link to="/contact" onClick={handleLinkClick}>Contact</Link>
+        <nav className="navbar menu-hero">
+            <div className="menu-blob"></div>
+
+            <div className="menu-header">
+                <div className="menu-brand">
+                    <span className="brand-name">portfolio / 2026</span>
+                </div>
+                <div className="menu-actions">
+                    <DarkModeToggle />
+                </div>
             </div>
-            <div className="menu-options">
-                <DarkModeToggle />
+
+            <div className="menu-list">
+                <div className="menu-item">
+                    <span className="menu-index">01</span>
+                    <Link to="/" onClick={handleLinkClick}>ACCUEIL</Link>
+                </div>
+                <div className="menu-item">
+                    <span className="menu-index">02</span>
+                    <Link to="/about" onClick={handleLinkClick}>A PROPOS</Link>
+                </div>
+                <div className="menu-item">
+                    <span className="menu-index">03</span>
+                    <Link to="/contact" onClick={handleLinkClick}>CONTACT</Link>
+                </div>
+            </div>
+
+            <div className="menu-social">
+                <a href="#" aria-label="GitHub">↗ GitHub</a>
             </div>
         </nav>   
         </header>

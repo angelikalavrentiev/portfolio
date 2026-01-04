@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../components/apiFetch.js"; 
+import { login as apiLogin } from "../components/apiFetch.js"; 
+import { useAuth } from "../components/AuthContext.js"; 
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -8,6 +9,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login: setAuthUser, checkAuth } = useAuth(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,10 +17,11 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const result = await login(email, password);
+      const result = await apiLogin(email, password);
       
       if (result.success) {
-        navigate("/");
+        await checkAuth();
+        navigate("/", { replace: true });
       } else {
         setError(result.error || "Erreur de connexion");
       }
@@ -31,30 +34,45 @@ const Login = () => {
 
   return (
     <div className="login">
-      <h1>Login</h1>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-      
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          disabled={loading}
-        />
-        <input
-          type="password"
-          placeholder="Mot de passe"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          disabled={loading}
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? "Connexion..." : "Se connecter"}
-        </button>
-      </form>
+      <div className="login-container">
+        <h1>Connexion Admin</h1>
+        {error && <div className="error-message">{error}</div>}
+        
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-group">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={loading}
+              className="login-input"
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="password"
+              placeholder="Mot de passe"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={loading}
+              className="login-input"
+            />
+          </div>
+          <button type="submit" disabled={loading} className="login-button">
+            {loading ? (
+              <>
+                <span className="button-spinner"></span>
+                Connexion en cours...
+              </>
+            ) : (
+              "Se connecter"
+            )}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
